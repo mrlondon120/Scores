@@ -67,8 +67,8 @@ header{display:flex;flex-direction:column;gap:10px}
 .banner{background:var(--warn-bg);color:var(--warn-ink);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .banner p{margin:0;flex:1;min-width:200px;font-size:.92rem}
 
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding-block:12px;margin-top:4px}
-nav.tabs button{border:0;background:var(--sunk);border-radius:10px;padding:10px 4px;font-weight:700;color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding-block:12px;margin-top:4px}
+nav.tabs button{border:0;background:var(--sunk);border-radius:10px;padding:10px 2px;font-weight:700;font-size:.92rem;color:var(--muted)}
 nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 
 .meta{color:var(--muted);font-size:.9rem;margin:2px 0 12px}
@@ -144,6 +144,24 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
 .label{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions .grow{flex:1}
+.hlist{display:flex;flex-direction:column;gap:10px}
+.hgame{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.hhead{width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:0;background:transparent;padding:12px 14px}
+.hhead .hinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hhead .hname{font-family:var(--display);font-weight:600;font-size:1.1rem;overflow-wrap:anywhere}
+.hhead .hdate{font-size:.85rem;color:var(--muted)}
+.hhead .hwin{font-size:.92rem;font-weight:700}
+.hhead .hwin b{color:var(--good)}
+.chev{flex:none;color:var(--muted);font-size:1.2rem;transition:transform .15s}
+.hgame.open .chev{transform:rotate(90deg)}
+.hbody{border-top:1px solid var(--line);padding:12px 14px 14px;display:flex;flex-direction:column;gap:12px}
+.mini{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.mini li{display:flex;align-items:center;gap:10px}
+.mini .n{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.mini .v{font-family:var(--display);font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.mini .r{width:1.4rem;text-align:center;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+.hbody .tablewrap{border-radius:10px}
+.hbody tbody tr{cursor:default}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -166,11 +184,13 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
     <button role="tab" data-act="tab" data-tab="scores">Scores</button>
     <button role="tab" data-act="tab" data-tab="rounds">Rounds</button>
     <button role="tab" data-act="tab" data-tab="players">Players</button>
+    <button role="tab" data-act="tab" data-tab="history">History</button>
   </nav>
 
   <section id="v-scores"></section>
   <section id="v-rounds" hidden></section>
   <section id="v-players" hidden></section>
+  <section id="v-history" hidden></section>
 </div>
 
 <div class="bar"><div class="in"><button class="btn primary" data-act="open-round">+ Score a round</button></div></div>
@@ -187,7 +207,7 @@ const fmtS=n=>n>0?'+'+n:fmt(n);
 const JOKER=30;
 
 function newGame(players,name,rounds,prev){
-  return {name:name||'Game night',players:players.slice(),
+  return {name:name||'Game night',started:Date.now(),players:players.slice(),
     teamsOn:prev?prev.teamsOn:false,
     teams:prev?prev.teams:[{id:uid(),name:'Team A'},{id:uid(),name:'Team B'}],
     teamOf:prev?prev.teamOf:{},rounds:rounds||[]};
@@ -195,7 +215,11 @@ function newGame(players,name,rounds,prev){
 function sample(){
   const p=['Ana','Marcus','Dee','Jay'].map((n,i)=>({id:uid(),name:n,c:i}));
   const [a,m,d,j]=p.map(x=>x.id);
-  return {example:true,roster:p,tab:'scores',lastType:'rk',game:newGame(p.map(x=>x.id),'Example: Rummikub',[
+  const day=864e5,past=Date.now()-7*day;
+  const hist=[{id:uid(),name:'Example: Uno',started:past,ended:past+2*36e5,teamsOn:false,teams:[],
+    players:[{id:a,name:'Ana',c:0,total:85},{id:m,name:'Marcus',c:1,total:140},{id:d,name:'Dee',c:2,total:60},{id:j,name:'Jay',c:3,total:110}],
+    rounds:[{type:'std',scores:{[a]:40,[m]:75,[d]:0,[j]:35}},{type:'std',scores:{[a]:45,[m]:65,[d]:60,[j]:75}}]}];
+  return {example:true,roster:p,history:hist,tab:'scores',lastType:'rk',game:newGame(p.map(x=>x.id),'Example: Rummikub',[
     {id:uid(),type:'rk',winner:a,racks:{[m]:12,[d]:31,[j]:7},scores:{[a]:50,[m]:-12,[d]:-31,[j]:-7}},
     {id:uid(),type:'rk',winner:d,racks:{[a]:9,[m]:4,[j]:22},scores:{[d]:35,[a]:-9,[m]:-4,[j]:-22}},
     {id:uid(),type:'rk',winner:m,racks:{[a]:14,[d]:6,[j]:40},scores:{[m]:60,[a]:-14,[d]:-6,[j]:-40}}
@@ -205,19 +229,65 @@ function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):nul
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load()||sample();
 if(!S.tab)S.tab='scores';
+if(!S.history)S.history=[];
 
 const P=id=>S.roster.find(p=>p.id===id)||{name:'?',c:3};
-const tileHTML=(id,sm)=>{const p=P(id);return `<span class="tile${sm?' sm':''}" style="--pc:var(--t${p.c%4})">${esc((p.name.trim()[0]||'?').toUpperCase())}</span>`};
+const tileFor=(name,c,sm)=>`<span class="tile${sm?' sm':''}" style="--pc:var(--t${c%4})">${esc((String(name).trim()[0]||'?').toUpperCase())}</span>`;
+const tileHTML=(id,sm)=>{const p=P(id);return tileFor(p.name,p.c,sm)};
 const hasScores=id=>S.game.rounds.some(r=>id in r.scores);
-function totals(){const t={};S.game.players.forEach(id=>t[id]=0);S.game.rounds.forEach(r=>{for(const id in r.scores)if(id in t)t[id]+=r.scores[id]});return t}
+function totalsOf(g){const t={};g.players.forEach(id=>t[id]=0);g.rounds.forEach(r=>{for(const id in r.scores)if(id in t)t[id]+=r.scores[id]});return t}
+const totals=()=>totalsOf(S.game);
 const numCls=n=>n<0?' neg':'';
+const fmtDate=ts=>{const d=new Date(ts),o={weekday:'short',month:'short',day:'numeric'};if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';return d.toLocaleDateString(undefined,o)};
+const openHist=new Set();
 
-function renderAll(){renderHead();renderScores();renderRounds();renderPlayers();save()}
+function renderAll(){renderHead();renderScores();renderRounds();renderPlayers();renderHistory();save()}
 function renderHead(){
   if(document.activeElement!==$('#gname'))$('#gname').value=S.game.name;
   $('#exbanner').hidden=!S.example;
   document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===S.tab));
-  ['scores','rounds','players'].forEach(t=>$('#v-'+t).hidden=S.tab!==t);
+  ['scores','rounds','players','history'].forEach(t=>$('#v-'+t).hidden=S.tab!==t);
+}
+
+/* ---------- History ---------- */
+function archive(g){
+  if(!g.rounds.length)return false;
+  const t=totalsOf(g);
+  S.history.unshift({id:uid(),name:g.name,started:g.started||Date.now(),ended:Date.now(),teamsOn:!!g.teamsOn,
+    teams:g.teamsOn?g.teams.map(tm=>({name:tm.name,members:g.players.filter(id=>g.teamOf[id]===tm.id)})).filter(x=>x.members.length):[],
+    players:g.players.map(id=>({id,name:P(id).name,c:P(id).c,total:t[id]})),
+    rounds:g.rounds.map(r=>({type:r.type,winner:r.winner||null,scores:{...r.scores}}))});
+  return true;
+}
+function histStandings(h){
+  const pt=Object.fromEntries(h.players.map(p=>[p.id,p.total]));
+  const players=h.players.slice().sort((a,b)=>b.total-a.total);
+  let teams=null;
+  if(h.teamsOn&&h.teams.length)teams=h.teams.map(tm=>({name:tm.name,total:tm.members.reduce((s,id)=>s+(pt[id]||0),0)})).sort((a,b)=>b.total-a.total);
+  const lead=teams||players,top=lead[0].total;
+  return {players,teams,winners:lead.filter(x=>x.total===top).map(x=>x.name),top};
+}
+function renderHistory(){
+  const H=S.history;
+  if(!H.length){$('#v-history').innerHTML=`<div class="empty"><p>No finished games yet. When you tap “New game,” the game you just played is saved here with its final scores.</p></div>`;return}
+  let h=`<p class="meta">${H.length} finished game${H.length>1?'s':''} saved on this device. Tap one to see the full scores.</p><div class="hlist">`;
+  H.forEach(g=>{
+    const st=histStandings(g),open=openHist.has(g.id);
+    h+=`<div class="hgame${open?' open':''}"><button class="hhead" data-act="hist-toggle" data-id="${g.id}" aria-expanded="${open}">
+      <span class="hinfo"><span class="hdate">${fmtDate(g.ended)} · ${g.rounds.length} round${g.rounds.length>1?'s':''} · ${g.players.length} players</span>
+      <span class="hname">${esc(g.name)}</span>
+      <span class="hwin">${st.winners.length>1?'Tie':'Winner'}: <b>${esc(st.winners.join(' & '))}</b> (${fmt(st.top)})</span></span>
+      <span class="chev" aria-hidden="true">›</span></button>`;
+    if(open){
+      h+=`<div class="hbody">`;
+      if(st.teams)h+=`<span class="label">Teams</span><ul class="mini">${st.teams.map((x,i)=>`<li><span class="r">${i+1}</span><span class="n">${esc(x.name)}</span><span class="v${numCls(x.total)}">${fmt(x.total)}</span></li>`).join('')}</ul>`;
+      h+=`<span class="label">Final scores</span><ul class="mini">${st.players.map((p,i)=>`<li><span class="r">${i+1}</span>${tileFor(p.name,p.c,true)}<span class="n">${esc(p.name)}</span><span class="v${numCls(p.total)}">${fmt(p.total)}</span></li>`).join('')}</ul>`;
+      h+=`<span class="label">Rounds</span><div class="tablewrap"><table><thead><tr><th>Round</th>${g.players.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead><tbody>${g.rounds.map((r,i)=>`<tr><td>${i+1}${r.type==='rk'?'<span class="kind">Rummikub</span>':''}</td>${g.players.map(p=>{const v=r.scores[p.id];return v===undefined?'<td>–</td>':`<td class="${r.winner===p.id?'out':numCls(v)}">${fmtS(v)}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`;
+      h+=`<div class="actions"><button class="btn small danger" data-act="hist-del" data-id="${g.id}">Delete this game</button></div></div>`;
+    }
+    h+=`</div>`;
+  });
+  $('#v-history').innerHTML=h+'</div>';
 }
 
 function renderScores(){
@@ -339,8 +409,10 @@ document.addEventListener('click',e=>{
     case 'tab':S.tab=b.dataset.tab;renderAll();window.scrollTo({top:0});break;
     case 'open-round':openEditor(null);break;
     case 'edit-round':openEditor(id);break;
-    case 'new-game':twoTap(b,()=>{S.game=newGame(g.players,'',[],g);renderAll();toast('New game started. Players kept.')});break;
-    case 'fresh':twoTap(b,()=>{S={roster:[],tab:'players',lastType:S.lastType,game:newGame([],'Game night',[])};renderAll();setTimeout(()=>$('#newname')&&$('#newname').focus(),50)});break;
+    case 'new-game':twoTap(b,()=>{const saved=archive(g);S.game=newGame(g.players,'',[],g);renderAll();toast(saved?'Last game saved to History. New game started.':'New game started. Players kept.')});break;
+    case 'hist-toggle':openHist.has(id)?openHist.delete(id):openHist.add(id);renderHistory();break;
+    case 'hist-del':twoTap(b,()=>{const i=S.history.findIndex(x=>x.id===id);const gone=S.history.splice(i,1)[0];openHist.delete(id);renderAll();toast('Game deleted',()=>{S.history.splice(i,0,gone);renderAll()})});break;
+    case 'fresh':twoTap(b,()=>{S={roster:[],history:[],tab:'players',lastType:S.lastType,game:newGame([],'Game night',[])};renderAll();setTimeout(()=>$('#newname')&&$('#newname').focus(),50)});break;
     case 'undo':{const r=g.rounds.pop();const n=g.rounds.length+1;renderAll();toast(`Round ${n} removed`,()=>{S.game.rounds.push(r);renderAll()});break}
     case 'toast-undo':if(undoFn){undoFn();undoFn=null}$('#toast').hidden=true;break;
     case 'del-player':twoTap(b,()=>{S.roster=S.roster.filter(p=>p.id!==id);g.players=g.players.filter(x=>x!==id);delete g.teamOf[id];renderAll()});break;
