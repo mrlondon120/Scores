@@ -250,7 +250,9 @@ header{background:var(--accent);color:var(--accent-ink);margin-top:-16px;margin-
 header .btn{background:transparent;color:inherit;border-color:var(--band-line)}
 .banner{background:transparent;color:var(--accent);border:1.5px dashed var(--accent);font-weight:700}
 .banner .btn{border-color:var(--accent);color:var(--accent)}
-nav.tabs{display:flex;justify-content:space-between;gap:6px;padding-block:6px 0;margin-top:10px;border-bottom:2px solid var(--line)}
+nav.tabs{display:flex;justify-content:space-between;gap:6px;padding-block:6px 0;margin-top:10px;border-bottom:2px solid var(--line);top:calc(env(safe-area-inset-top,0px) + var(--head-h,76px))}
+/* Header band stays put while scrolling; tabs stick directly under it */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:7}
 nav.tabs button{background:transparent;border-radius:0;padding:10px 2px 9px;margin-bottom:-2px;border-bottom:3px solid transparent;font-size:.9rem;min-width:0}
 nav.tabs button[aria-selected="true"]{background:transparent;color:var(--ink);border-bottom-color:var(--accent)}
 section[role=tabpanel]{padding-top:14px}
@@ -486,6 +488,8 @@ const THEME_META=[...document.querySelectorAll('meta[name=theme-color]')].map(m=
 function applyTheme(){const th=S.theme||'auto',root=document.documentElement;
   if(th==='auto')delete root.dataset.theme;else root.dataset.theme=th;
   THEME_META.forEach(([m,c])=>m.setAttribute('content',th==='auto'?c:(th==='dark'?'#2fae94':'#0e6b5c')))}
+(()=>{const h=document.querySelector('header');if(!h)return;const set=()=>document.documentElement.style.setProperty('--head-h',h.offsetHeight+'px');set();
+  try{new ResizeObserver(set).observe(h)}catch(e){addEventListener('resize',set)}})();
 function renderAll(){normalize();save();applyTheme();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
 function renderHead(){
   if(document.activeElement!==$('#gname'))$('#gname').value=S.game.name;
