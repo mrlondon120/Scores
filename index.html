@@ -314,7 +314,7 @@ function sample(){
   const hist=[{id:uid(),name:'Example: Uno',started:past,ended:past+2*36e5,teamsOn:false,teams:[],
     players:[{id:a,name:'Ana',c:0,total:85},{id:m,name:'Marcus',c:1,total:140},{id:d,name:'Dee',c:2,total:60},{id:j,name:'Jay',c:3,total:110}],
     rounds:[{type:'std',scores:{[a]:40,[m]:75,[d]:0,[j]:35}},{type:'std',scores:{[a]:45,[m]:65,[d]:60,[j]:75}}]}];
-  return {example:true,roster:p,history:hist,tab:'scores',lastType:'rk',game:newGame(p.map(x=>x.id),'Example: Rummikub',[
+  return {example:true,sampleIds:{players:p.map(x=>x.id),history:hist.map(h=>h.id)},roster:p,history:hist,tab:'scores',lastType:'rk',game:newGame(p.map(x=>x.id),'Example: Rummikub',[
     {id:uid(),type:'rk',winner:a,racks:{[m]:12,[d]:31,[j]:7},scores:{[a]:50,[m]:-12,[d]:-31,[j]:-7}},
     {id:uid(),type:'rk',winner:d,racks:{[a]:9,[m]:4,[j]:22},scores:{[d]:35,[a]:-9,[m]:-4,[j]:-22}},
     {id:uid(),type:'rk',winner:m,racks:{[a]:14,[d]:6,[j]:40},scores:{[m]:60,[a]:-14,[d]:-6,[j]:-40}}
@@ -575,7 +575,7 @@ function startNew(){
   if(ng.teamsOn&&!ng.teams.length){toast('Add a team first');return}
   const g=S.game,ids=S.roster.slice().sort(byName).filter(p=>ng.sel.has(p.id)).map(p=>p.id);
   const tids=new Set(ng.teams.map(t=>t.id)),teamOf={};for(const k in ng.teamOf)if(tids.has(ng.teamOf[k]))teamOf[k]=ng.teamOf[k];
-  const saved=archive(g);
+  const saved=archive(g);S.example=false;
   S.game=newGame(ids,ng.name.trim(),[],{teamsOn:ng.teamsOn,lowWins:ng.lowWins,teams:ng.teams,teamOf,mode:ng.mode});
   S.tab='scores';closeNew();renderAll();window.scrollTo({top:0});
   toast(saved?'Last game saved to History. New game started.':'New game started');
@@ -795,7 +795,17 @@ document.addEventListener('click',e=>{
     case 'win-history':$('#winbg').hidden=true;S.tab='history';openHist.add(S.history[0]&&S.history[0].id);renderAll();window.scrollTo({top:0});break;
     case 'hist-toggle':openHist.has(id)?openHist.delete(id):openHist.add(id);renderHistory();break;
     case 'hist-del':twoTap(b,()=>{const i=S.history.findIndex(x=>x.id===id);const gone=S.history.splice(i,1)[0];openHist.delete(id);renderAll();toast('Game deleted',()=>{S.history.splice(i,0,gone);renderAll()})});break;
-    case 'fresh':twoTap(b,()=>{S={roster:[],history:[],tab:'players',lastType:S.lastType,timer:S.timer,game:newGame([],'Game night',[])};renderAll();setTimeout(()=>$('#newname')&&$('#newname').focus(),50)});break;
+    case 'fresh':{
+      /* Remove only the example's players and games. Anything the user added stays. */
+      const prev=JSON.stringify(S),ex=S.sampleIds||{};
+      const sp=new Set(ex.players||S.roster.filter(p=>['Ana','Marcus','Dee','Jay'].includes(p.name)).map(p=>p.id));
+      const sh=new Set(ex.history||S.history.filter(h=>/^Example: /.test(h.name)).map(h=>h.id));
+      const history=S.history.filter(h=>!sh.has(h.id)),keep=new Set(history.flatMap(h=>h.players.map(p=>p.id)));
+      const sampleGame=g.players.every(id=>sp.has(id));if(!sampleGame)g.players.forEach(id=>keep.add(id));
+      S.roster=S.roster.filter(p=>!sp.has(p.id)||keep.has(p.id));S.history=history;S.example=false;delete S.sampleIds;
+      if(sampleGame){S.game=newGame([],'Game night',[]);S.tab='players'}
+      renderAll();toast('Example removed',()=>{S=JSON.parse(prev);renderAll()});
+      if(sampleGame)setTimeout(()=>$('#newname')&&$('#newname').focus(),50);break}
     case 'undo':{const r=g.rounds.pop();const n=g.rounds.length+1;renderAll();toast(`Round ${n} deleted`,()=>{S.game.rounds.push(r);renderAll()});break}
     case 'toast-undo':if(undoFn){undoFn();undoFn=null}$('#toast').hidden=true;break;
     case 'del-player':twoTap(b,()=>{S.roster=S.roster.filter(p=>p.id!==id);g.players=g.players.filter(x=>x!==id);delete g.teamOf[id];renderAll()});break;
@@ -844,11 +854,11 @@ document.addEventListener('change',e=>{
 document.addEventListener('submit',e=>{
   if(e.target.id==='ngadd'){e.preventDefault();const v=$('#ngNew').value.trim();if(!v||!ng)return;
     let p=S.roster.find(x=>x.name.toLowerCase()===v.toLowerCase());
-    if(!p){p={id:uid(),name:v,c:S.roster.length%4};S.roster.push(p);save();renderPlayers()}
+    if(!p){p={id:uid(),name:v,c:S.roster.length%4};S.roster.push(p);S.example=false;save();renderPlayers()}
     ng.sel.add(p.id);renderNew();$('#ngNew').focus();toast(`${p.name} added`);return}
   if(e.target.id!=='addform')return;e.preventDefault();
   const inp=$('#newname'),v=inp.value.trim();if(!v)return;
-  const p={id:uid(),name:v,c:S.roster.length%4};S.roster.push(p);S.game.players.push(p.id);
+  const p={id:uid(),name:v,c:S.roster.length%4};S.roster.push(p);S.game.players.push(p.id);S.example=false;
   renderAll();const ni=$('#newname');if(ni)ni.focus();toast(`${v} added`);
 });
 document.addEventListener('keydown',e=>{
