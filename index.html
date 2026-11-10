@@ -357,7 +357,7 @@ const rankList=vals=>{let r=0,prev=null;return vals.map((v,i)=>{if(v!==prev){r=i
 const fmtDate=ts=>{const d=new Date(ts),o={weekday:'short',month:'short',day:'numeric'};if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';return d.toLocaleDateString(undefined,o)};
 const openHist=new Set();
 
-function renderAll(){save();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
+function renderAll(){normalize();save();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
 function renderHead(){
   if(document.activeElement!==$('#gname'))$('#gname').value=S.game.name;
   $('#exbanner').hidden=!S.example;
@@ -719,7 +719,7 @@ document.addEventListener('click',e=>{
     case 'win-history':$('#winbg').hidden=true;S.tab='history';openHist.add(S.history[0]&&S.history[0].id);renderAll();window.scrollTo({top:0});break;
     case 'hist-toggle':openHist.has(id)?openHist.delete(id):openHist.add(id);renderHistory();break;
     case 'hist-del':twoTap(b,()=>{const i=S.history.findIndex(x=>x.id===id);const gone=S.history.splice(i,1)[0];openHist.delete(id);renderAll();toast('Game deleted',()=>{S.history.splice(i,0,gone);renderAll()})});break;
-    case 'fresh':twoTap(b,()=>{S={roster:[],history:[],tab:'players',lastType:S.lastType,game:newGame([],'Game night',[])};renderAll();setTimeout(()=>$('#newname')&&$('#newname').focus(),50)});break;
+    case 'fresh':twoTap(b,()=>{S={roster:[],history:[],tab:'players',lastType:S.lastType,timer:S.timer,game:newGame([],'Game night',[])};renderAll();setTimeout(()=>$('#newname')&&$('#newname').focus(),50)});break;
     case 'undo':{const r=g.rounds.pop();const n=g.rounds.length+1;renderAll();toast(`Round ${n} removed`,()=>{S.game.rounds.push(r);renderAll()});break}
     case 'toast-undo':if(undoFn){undoFn();undoFn=null}$('#toast').hidden=true;break;
     case 'del-player':twoTap(b,()=>{S.roster=S.roster.filter(p=>p.id!==id);g.players=g.players.filter(x=>x!==id);delete g.teamOf[id];renderAll()});break;
