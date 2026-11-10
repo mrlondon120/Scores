@@ -168,6 +168,10 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
 .mini li{display:flex;align-items:center;gap:10px}
 .mini .n{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
 .mini .v{font-family:var(--display);font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.anline{margin:0 0 4px;font-size:1rem}
+.mini .an{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini .an span{color:var(--muted);font-weight:600}
+.mini li.first .an{color:var(--good)}
 .mini .r{width:1.4rem;text-align:center;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
 .hbody .tablewrap{border-radius:10px}
 .hbody tbody tr{cursor:default}
@@ -418,10 +422,27 @@ function showWinner(h){
     ${lastEnd&&lastEnd.id===h.id?'<button class="btn link" data-act="win-undo">Not done yet? Undo and keep playing</button>':''}`;
   $('#win').innerHTML=html;$('#winbg').hidden=false;
 }
+function allNights(H){
+  const st={},solo=H.filter(g=>!g.teamsOn&&g.players.length);let streak=null,teamN=H.length-solo.length,ties=0;
+  solo.forEach((g,i)=>{const s=histStandings(g),win=s.winners.length===1?s.winnerItems[0].id:null;if(!win)ties++;
+    g.players.forEach(p=>{const k=p.id||p.name;const cur=S.roster.find(x=>x.id===p.id);st[k]=st[k]||{name:cur?cur.name:p.name,c:cur?cur.c:p.c,wins:0,played:0};st[k].played++;if(win===p.id)st[k].wins++});
+    if(i===0)streak={id:win,n:win?1:0};else if(streak&&streak.id&&streak.n===i&&win===streak.id)streak.n++});
+  const rows=Object.values(st).sort((a,b)=>b.wins-a.wins||(b.wins/b.played)-(a.wins/a.played)||a.name.localeCompare(b.name));
+  return {rows,streak,games:solo.length,teamN,ties};
+}
+function allNightsHTML(H){
+  const a=allNights(H);if(!a.games)return '';
+  const top=a.rows.length?a.rows[0].wins:0;
+  const lastName=a.streak&&a.streak.id?(S.roster.find(p=>p.id===a.streak.id)||H.filter(g=>!g.teamsOn)[0].players.find(p=>p.id===a.streak.id)||{name:'?'}).name:null;
+  const line=lastName?`Last winner: <b>${esc(lastName)}</b>${a.streak.n>1?` · ${a.streak.n} in a row`:''}`:'The last game was a tie.';
+  return `<div class="card allnights"><h2>All nights</h2><p class="anline">${line}</p>
+  <ul class="mini">${a.rows.map(r=>`<li class="${top&&r.wins===top?'first':''}">${tileFor(r.name,r.c,true)}<span class="n">${esc(r.name)}</span><span class="an">${r.wins} win${r.wins===1?'':'s'} <span>of ${r.played}</span></span></li>`).join('')}</ul>
+  <span class="hint">${a.games} game${a.games>1?'s':''} counted${a.ties?`, ${a.ties} tied (no win)`:''}${a.teamN?`. ${a.teamN} team game${a.teamN>1?'s':''} not counted`:''}.</span></div>`;
+}
 function renderHistory(){
   const H=S.history;
   if(!H.length){$('#v-history').innerHTML=`<div class="empty"><p>No finished games yet. When you end a game or start a new one, it’s saved here with its final scores.</p></div>`;return}
-  let h=`<p class="meta">${H.length} finished game${H.length>1?'s':''} saved on this device. Tap one to see the full scores.</p><div class="hlist">`;
+  let h=allNightsHTML(H)+`<p class="meta">${H.length} finished game${H.length>1?'s':''} saved on this device. Tap one to see the full scores.</p><div class="hlist">`;
   H.forEach(g=>{
     const st=histStandings(g),open=openHist.has(g.id);
     h+=`<div class="hgame${open?' open':''}"><button class="hhead" data-act="hist-toggle" data-id="${g.id}" aria-expanded="${open}">
@@ -434,7 +455,7 @@ function renderHistory(){
       const fl=`<span class="label">Final scores${g.lowWins?' · lowest score wins':''}</span>`;
       if(st.teamScored)h+=fl+miniList(st.teams,false);
       else{if(st.teams)h+=`<span class="label">Teams</span>${miniList(st.teams,false)}`;h+=fl+miniList(st.players,true)}
-      h+=`<span class="label">Rounds</span><div class="tablewrap"><table><thead><tr><th>Round</th>${st.cols.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead><tbody>${g.rounds.map((r,i)=>`<tr><td>${i+1}${r.type==='rk'?'<span class="kind">Rummikub</span>':''}</td>${st.cols.map(p=>{const v=r.scores[p.id];return v===undefined?'<td>–</td>':`<td class="${r.winner===p.id?'out':numCls(v)}">${fmtS(v)}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`;
+      h+=`<span class="label">Rounds</span><div class="tablewrap"><table><thead><tr><th>Round</th>${st.cols.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead><tbody>${g.rounds.map((r,i)=>`<tr><td>${i+1}${r.type==='rk'?'<span class="kind">Rummikub</span>':''}</td>${st.cols.map(p=>{const v=r.scores[p.id];return v===undefined?'<td>–</td>':`<td class="${(r.winner||r.out)===p.id?'out':numCls(v)}">${fmtS(v)}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`;
       h+=`<div class="actions"><button class="btn small danger" data-act="hist-del" data-id="${g.id}">Delete this game</button></div></div>`;
     }
     h+=`</div>`;
