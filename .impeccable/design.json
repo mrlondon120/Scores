@@ -1,0 +1,1135 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T19:54:48Z",
+  "title": "Design System: Game Night Scores",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Printed Teal",
+        "canonical": "#0e6b5c",
+        "cssVar": "--accent",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.013 178)",
+          "oklch(26% 0.037 178)",
+          "oklch(38% 0.062 178)",
+          "oklch(49% 0.083 178)",
+          "oklch(61% 0.083 178)",
+          "oklch(72% 0.062 178)",
+          "oklch(84% 0.037 178)",
+          "oklch(95% 0.013 178)"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "Band Ink",
+        "canonical": "#ffffff",
+        "cssVar": "--accent-ink",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Teal Wash",
+        "canonical": "#dff0eb",
+        "cssVar": "--accent-soft",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.003 176)",
+          "oklch(26% 0.008 176)",
+          "oklch(38% 0.014 176)",
+          "oklch(49% 0.019 176)",
+          "oklch(61% 0.019 176)",
+          "oklch(72% 0.014 176)",
+          "oklch(84% 0.008 176)",
+          "oklch(95% 0.003 176)"
+        ]
+      },
+      "band-line": {
+        "role": "primary",
+        "displayName": "Band Rule",
+        "canonical": "rgba(255,255,255,.45)",
+        "cssVar": "--band-line",
+        "theme": "light"
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Pad",
+        "canonical": "#f7f8f7",
+        "cssVar": "--bg",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.000 146)",
+          "oklch(26% 0.001 146)",
+          "oklch(38% 0.001 146)",
+          "oklch(49% 0.002 146)",
+          "oklch(61% 0.002 146)",
+          "oklch(72% 0.001 146)",
+          "oklch(84% 0.001 146)",
+          "oklch(95% 0.000 146)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#ffffff",
+        "cssVar": "--surface",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "sunk": {
+        "role": "neutral",
+        "displayName": "Sunk",
+        "canonical": "#f0f4f2",
+        "cssVar": "--sunk",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.001 165)",
+          "oklch(26% 0.002 165)",
+          "oklch(38% 0.004 165)",
+          "oklch(49% 0.005 165)",
+          "oklch(61% 0.005 165)",
+          "oklch(72% 0.004 165)",
+          "oklch(84% 0.002 165)",
+          "oklch(95% 0.001 165)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1d2523",
+        "cssVar": "--ink",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.002 178)",
+          "oklch(26% 0.005 178)",
+          "oklch(38% 0.009 178)",
+          "oklch(49% 0.012 178)",
+          "oklch(61% 0.012 178)",
+          "oklch(72% 0.009 178)",
+          "oklch(84% 0.005 178)",
+          "oklch(95% 0.002 178)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#384140",
+        "cssVar": "--graphite",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.002 189)",
+          "oklch(26% 0.005 189)",
+          "oklch(38% 0.009 189)",
+          "oklch(49% 0.012 189)",
+          "oklch(61% 0.012 189)",
+          "oklch(72% 0.009 189)",
+          "oklch(84% 0.005 189)",
+          "oklch(95% 0.002 189)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#56645f",
+        "cssVar": "--muted",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.003 172)",
+          "oklch(26% 0.008 172)",
+          "oklch(38% 0.014 172)",
+          "oklch(49% 0.019 172)",
+          "oklch(61% 0.019 172)",
+          "oklch(72% 0.014 172)",
+          "oklch(84% 0.008 172)",
+          "oklch(95% 0.003 172)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d3e4de",
+        "cssVar": "--line",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.003 173)",
+          "oklch(26% 0.009 173)",
+          "oklch(38% 0.015 173)",
+          "oklch(49% 0.020 173)",
+          "oklch(61% 0.020 173)",
+          "oklch(72% 0.015 173)",
+          "oklch(84% 0.009 173)",
+          "oklch(95% 0.003 173)"
+        ]
+      },
+      "field-line": {
+        "role": "neutral",
+        "displayName": "Field Rule",
+        "canonical": "#74867f",
+        "cssVar": "--field-line",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.004 170)",
+          "oklch(26% 0.010 170)",
+          "oklch(38% 0.017 170)",
+          "oklch(49% 0.023 170)",
+          "oklch(61% 0.023 170)",
+          "oklch(72% 0.017 170)",
+          "oklch(84% 0.010 170)",
+          "oklch(95% 0.004 170)"
+        ]
+      },
+      "tile-red": {
+        "role": "secondary",
+        "displayName": "Tile Red",
+        "canonical": "#c62f2f",
+        "cssVar": "--t0",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.028 26)",
+          "oklch(26% 0.082 26)",
+          "oklch(38% 0.140 26)",
+          "oklch(49% 0.188 26)",
+          "oklch(61% 0.188 26)",
+          "oklch(72% 0.140 26)",
+          "oklch(84% 0.082 26)",
+          "oklch(95% 0.028 26)"
+        ]
+      },
+      "tile-blue": {
+        "role": "secondary",
+        "displayName": "Tile Blue",
+        "canonical": "#1f5fbf",
+        "cssVar": "--t1",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.025 259)",
+          "oklch(26% 0.072 259)",
+          "oklch(38% 0.122 259)",
+          "oklch(49% 0.164 259)",
+          "oklch(61% 0.164 259)",
+          "oklch(72% 0.122 259)",
+          "oklch(84% 0.072 259)",
+          "oklch(95% 0.025 259)"
+        ]
+      },
+      "tile-orange": {
+        "role": "secondary",
+        "displayName": "Tile Orange",
+        "canonical": "#a35c00",
+        "cssVar": "--t2",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.019 62)",
+          "oklch(26% 0.055 62)",
+          "oklch(38% 0.094 62)",
+          "oklch(49% 0.126 62)",
+          "oklch(61% 0.126 62)",
+          "oklch(72% 0.094 62)",
+          "oklch(84% 0.055 62)",
+          "oklch(95% 0.019 62)"
+        ]
+      },
+      "tile-black": {
+        "role": "secondary",
+        "displayName": "Tile Black",
+        "canonical": "#1d1d1d",
+        "cssVar": "--t3",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "good": {
+        "role": "tertiary",
+        "displayName": "Win Green",
+        "canonical": "#1b7a43",
+        "cssVar": "--good",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.018 153)",
+          "oklch(26% 0.053 153)",
+          "oklch(38% 0.090 153)",
+          "oklch(49% 0.121 153)",
+          "oklch(61% 0.121 153)",
+          "oklch(72% 0.090 153)",
+          "oklch(84% 0.053 153)",
+          "oklch(95% 0.018 153)"
+        ]
+      },
+      "bad": {
+        "role": "tertiary",
+        "displayName": "Red Pencil",
+        "canonical": "#c23a2b",
+        "cssVar": "--bad",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.026 30)",
+          "oklch(26% 0.077 30)",
+          "oklch(38% 0.130 30)",
+          "oklch(49% 0.175 30)",
+          "oklch(61% 0.175 30)",
+          "oklch(72% 0.130 30)",
+          "oklch(84% 0.077 30)",
+          "oklch(95% 0.026 30)"
+        ]
+      },
+      "warn-bg": {
+        "role": "tertiary",
+        "displayName": "Notice Amber Ground",
+        "canonical": "#fdf3dc",
+        "cssVar": "--warn-bg",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.005 87)",
+          "oklch(26% 0.014 87)",
+          "oklch(38% 0.024 87)",
+          "oklch(49% 0.032 87)",
+          "oklch(61% 0.032 87)",
+          "oklch(72% 0.024 87)",
+          "oklch(84% 0.014 87)",
+          "oklch(95% 0.005 87)"
+        ]
+      },
+      "warn-ink": {
+        "role": "tertiary",
+        "displayName": "Notice Amber Ink",
+        "canonical": "#6b4a00",
+        "cssVar": "--warn-ink",
+        "theme": "light",
+        "tonalRamp": [
+          "oklch(15% 0.014 79)",
+          "oklch(26% 0.039 79)",
+          "oklch(38% 0.067 79)",
+          "oklch(49% 0.090 79)",
+          "oklch(61% 0.090 79)",
+          "oklch(72% 0.067 79)",
+          "oklch(84% 0.039 79)",
+          "oklch(95% 0.014 79)"
+        ]
+      },
+      "accent-dark": {
+        "role": "primary",
+        "displayName": "Printed Teal (night)",
+        "canonical": "#2fae94",
+        "cssVar": "--accent",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.017 176)",
+          "oklch(26% 0.050 176)",
+          "oklch(38% 0.085 176)",
+          "oklch(49% 0.115 176)",
+          "oklch(61% 0.115 176)",
+          "oklch(72% 0.085 176)",
+          "oklch(84% 0.050 176)",
+          "oklch(95% 0.017 176)"
+        ]
+      },
+      "accent-ink-dark": {
+        "role": "primary",
+        "displayName": "Band Ink (night)",
+        "canonical": "#03201a",
+        "cssVar": "--accent-ink",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.006 177)",
+          "oklch(26% 0.016 177)",
+          "oklch(38% 0.028 177)",
+          "oklch(49% 0.037 177)",
+          "oklch(61% 0.037 177)",
+          "oklch(72% 0.028 177)",
+          "oklch(84% 0.016 177)",
+          "oklch(95% 0.006 177)"
+        ]
+      },
+      "accent-soft-dark": {
+        "role": "primary",
+        "displayName": "Teal Wash (night)",
+        "canonical": "#123029",
+        "cssVar": "--accent-soft",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.006 176)",
+          "oklch(26% 0.017 176)",
+          "oklch(38% 0.029 176)",
+          "oklch(49% 0.038 176)",
+          "oklch(61% 0.038 176)",
+          "oklch(72% 0.029 176)",
+          "oklch(84% 0.017 176)",
+          "oklch(95% 0.006 176)"
+        ]
+      },
+      "band-line-dark": {
+        "role": "primary",
+        "displayName": "Band Rule (night)",
+        "canonical": "rgba(3,32,26,.45)",
+        "cssVar": "--band-line",
+        "theme": "dark"
+      },
+      "bg-dark": {
+        "role": "neutral",
+        "displayName": "Pad (night)",
+        "canonical": "#0d1513",
+        "cssVar": "--bg",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.002 178)",
+          "oklch(26% 0.006 178)",
+          "oklch(38% 0.009 178)",
+          "oklch(49% 0.013 178)",
+          "oklch(61% 0.013 178)",
+          "oklch(72% 0.009 178)",
+          "oklch(84% 0.006 178)",
+          "oklch(95% 0.002 178)"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Sheet White (night)",
+        "canonical": "#141d1b",
+        "cssVar": "--surface",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.002 180)",
+          "oklch(26% 0.006 180)",
+          "oklch(38% 0.010 180)",
+          "oklch(49% 0.014 180)",
+          "oklch(61% 0.014 180)",
+          "oklch(72% 0.010 180)",
+          "oklch(84% 0.006 180)",
+          "oklch(95% 0.002 180)"
+        ]
+      },
+      "sunk-dark": {
+        "role": "neutral",
+        "displayName": "Sunk (night)",
+        "canonical": "#101917",
+        "cssVar": "--sunk",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.002 180)",
+          "oklch(26% 0.006 180)",
+          "oklch(38% 0.010 180)",
+          "oklch(49% 0.014 180)",
+          "oklch(61% 0.014 180)",
+          "oklch(72% 0.010 180)",
+          "oklch(84% 0.006 180)",
+          "oklch(95% 0.002 180)"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink (night)",
+        "canonical": "#e6edea",
+        "cssVar": "--ink",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.001 169)",
+          "oklch(26% 0.004 169)",
+          "oklch(38% 0.006 169)",
+          "oklch(49% 0.008 169)",
+          "oklch(61% 0.008 169)",
+          "oklch(72% 0.006 169)",
+          "oklch(84% 0.004 169)",
+          "oklch(95% 0.001 169)"
+        ]
+      },
+      "graphite-dark": {
+        "role": "neutral",
+        "displayName": "Graphite (night)",
+        "canonical": "#d3dcd8",
+        "cssVar": "--graphite",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.002 168)",
+          "oklch(26% 0.005 168)",
+          "oklch(38% 0.008 168)",
+          "oklch(49% 0.011 168)",
+          "oklch(61% 0.011 168)",
+          "oklch(72% 0.008 168)",
+          "oklch(84% 0.005 168)",
+          "oklch(95% 0.002 168)"
+        ]
+      },
+      "muted-dark": {
+        "role": "neutral",
+        "displayName": "Muted (night)",
+        "canonical": "#93a39e",
+        "cssVar": "--muted",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.003 175)",
+          "oklch(26% 0.009 175)",
+          "oklch(38% 0.014 175)",
+          "oklch(49% 0.019 175)",
+          "oklch(61% 0.019 175)",
+          "oklch(72% 0.014 175)",
+          "oklch(84% 0.009 175)",
+          "oklch(95% 0.003 175)"
+        ]
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Rule (night)",
+        "canonical": "#21392f",
+        "cssVar": "--line",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.005 166)",
+          "oklch(26% 0.015 166)",
+          "oklch(38% 0.026 166)",
+          "oklch(49% 0.035 166)",
+          "oklch(61% 0.035 166)",
+          "oklch(72% 0.026 166)",
+          "oklch(84% 0.015 166)",
+          "oklch(95% 0.005 166)"
+        ]
+      },
+      "field-line-dark": {
+        "role": "neutral",
+        "displayName": "Field Rule (night)",
+        "canonical": "#61756c",
+        "cssVar": "--field-line",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.004 166)",
+          "oklch(26% 0.012 166)",
+          "oklch(38% 0.020 166)",
+          "oklch(49% 0.027 166)",
+          "oklch(61% 0.027 166)",
+          "oklch(72% 0.020 166)",
+          "oklch(84% 0.012 166)",
+          "oklch(95% 0.004 166)"
+        ]
+      },
+      "tile-red-dark": {
+        "role": "secondary",
+        "displayName": "Tile Red (night)",
+        "canonical": "#f06b60",
+        "cssVar": "--t0",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.025 27)",
+          "oklch(26% 0.073 27)",
+          "oklch(38% 0.124 27)",
+          "oklch(49% 0.166 27)",
+          "oklch(61% 0.166 27)",
+          "oklch(72% 0.124 27)",
+          "oklch(84% 0.073 27)",
+          "oklch(95% 0.025 27)"
+        ]
+      },
+      "tile-blue-dark": {
+        "role": "secondary",
+        "displayName": "Tile Blue (night)",
+        "canonical": "#72a3f3",
+        "cssVar": "--t1",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.019 260)",
+          "oklch(26% 0.056 260)",
+          "oklch(38% 0.096 260)",
+          "oklch(49% 0.129 260)",
+          "oklch(61% 0.129 260)",
+          "oklch(72% 0.096 260)",
+          "oklch(84% 0.056 260)",
+          "oklch(95% 0.019 260)"
+        ]
+      },
+      "tile-orange-dark": {
+        "role": "secondary",
+        "displayName": "Tile Orange (night)",
+        "canonical": "#f2a744",
+        "cssVar": "--t2",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.021 70)",
+          "oklch(26% 0.062 70)",
+          "oklch(38% 0.106 70)",
+          "oklch(49% 0.142 70)",
+          "oklch(61% 0.142 70)",
+          "oklch(72% 0.106 70)",
+          "oklch(84% 0.062 70)",
+          "oklch(95% 0.021 70)"
+        ]
+      },
+      "tile-black-dark": {
+        "role": "secondary",
+        "displayName": "Tile Black (night)",
+        "canonical": "#ebe6da",
+        "cssVar": "--t3",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.003 88)",
+          "oklch(26% 0.007 88)",
+          "oklch(38% 0.013 88)",
+          "oklch(49% 0.017 88)",
+          "oklch(61% 0.017 88)",
+          "oklch(72% 0.013 88)",
+          "oklch(84% 0.007 88)",
+          "oklch(95% 0.003 88)"
+        ]
+      },
+      "good-dark": {
+        "role": "tertiary",
+        "displayName": "Win Green (night)",
+        "canonical": "#5cc98a",
+        "cssVar": "--good",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.020 156)",
+          "oklch(26% 0.060 156)",
+          "oklch(38% 0.101 156)",
+          "oklch(49% 0.137 156)",
+          "oklch(61% 0.137 156)",
+          "oklch(72% 0.101 156)",
+          "oklch(84% 0.060 156)",
+          "oklch(95% 0.020 156)"
+        ]
+      },
+      "bad-dark": {
+        "role": "tertiary",
+        "displayName": "Red Pencil (night)",
+        "canonical": "#f08a7e",
+        "cssVar": "--bad",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.019 28)",
+          "oklch(26% 0.055 28)",
+          "oklch(38% 0.094 28)",
+          "oklch(49% 0.126 28)",
+          "oklch(61% 0.126 28)",
+          "oklch(72% 0.094 28)",
+          "oklch(84% 0.055 28)",
+          "oklch(95% 0.019 28)"
+        ]
+      },
+      "warn-bg-dark": {
+        "role": "tertiary",
+        "displayName": "Notice Amber Ground (night)",
+        "canonical": "#3a2f12",
+        "cssVar": "--warn-bg",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.007 89)",
+          "oklch(26% 0.021 89)",
+          "oklch(38% 0.035 89)",
+          "oklch(49% 0.047 89)",
+          "oklch(61% 0.047 89)",
+          "oklch(72% 0.035 89)",
+          "oklch(84% 0.021 89)",
+          "oklch(95% 0.007 89)"
+        ]
+      },
+      "warn-ink-dark": {
+        "role": "tertiary",
+        "displayName": "Notice Amber Ink (night)",
+        "canonical": "#f3d58c",
+        "cssVar": "--warn-ink",
+        "theme": "dark",
+        "tonalRamp": [
+          "oklch(15% 0.015 88)",
+          "oklch(26% 0.043 88)",
+          "oklch(38% 0.072 88)",
+          "oklch(49% 0.098 88)",
+          "oklch(61% 0.098 88)",
+          "oklch(72% 0.072 88)",
+          "oklch(84% 0.043 88)",
+          "oklch(95% 0.015 88)"
+        ]
+      },
+      "timer-idle": {
+        "role": "neutral",
+        "displayName": "Timer Idle",
+        "canonical": "#0e1614",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.002 178)",
+          "oklch(26% 0.006 178)",
+          "oklch(38% 0.009 178)",
+          "oklch(49% 0.013 178)",
+          "oklch(61% 0.013 178)",
+          "oklch(72% 0.009 178)",
+          "oklch(84% 0.006 178)",
+          "oklch(95% 0.002 178)"
+        ]
+      },
+      "timer-run": {
+        "role": "neutral",
+        "displayName": "Timer Running",
+        "canonical": "#0b2b25",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.006 179)",
+          "oklch(26% 0.017 179)",
+          "oklch(38% 0.029 179)",
+          "oklch(49% 0.039 179)",
+          "oklch(61% 0.039 179)",
+          "oklch(72% 0.029 179)",
+          "oklch(84% 0.017 179)",
+          "oklch(95% 0.006 179)"
+        ]
+      },
+      "timer-warn": {
+        "role": "tertiary",
+        "displayName": "Timer Last Seconds",
+        "canonical": "#3a2105",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.008 65)",
+          "oklch(26% 0.024 65)",
+          "oklch(38% 0.041 65)",
+          "oklch(49% 0.056 65)",
+          "oklch(61% 0.056 65)",
+          "oklch(72% 0.041 65)",
+          "oklch(84% 0.024 65)",
+          "oklch(95% 0.008 65)"
+        ]
+      },
+      "timer-up": {
+        "role": "tertiary",
+        "displayName": "Timer Time's Up",
+        "canonical": "#4a100d",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.013 27)",
+          "oklch(26% 0.039 27)",
+          "oklch(38% 0.065 27)",
+          "oklch(49% 0.088 27)",
+          "oklch(61% 0.088 27)",
+          "oklch(72% 0.065 27)",
+          "oklch(84% 0.039 27)",
+          "oklch(95% 0.013 27)"
+        ]
+      },
+      "timer-paused": {
+        "role": "neutral",
+        "displayName": "Timer Paused",
+        "canonical": "#161d1b",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.002 176)",
+          "oklch(26% 0.005 176)",
+          "oklch(38% 0.008 176)",
+          "oklch(49% 0.011 176)",
+          "oklch(61% 0.011 176)",
+          "oklch(72% 0.008 176)",
+          "oklch(84% 0.005 176)",
+          "oklch(95% 0.002 176)"
+        ]
+      },
+      "timer-ring": {
+        "role": "primary",
+        "displayName": "Timer Ring",
+        "canonical": "#3db49a",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.017 175)",
+          "oklch(26% 0.049 175)",
+          "oklch(38% 0.083 175)",
+          "oklch(49% 0.112 175)",
+          "oklch(61% 0.112 175)",
+          "oklch(72% 0.083 175)",
+          "oklch(84% 0.049 175)",
+          "oklch(95% 0.017 175)"
+        ]
+      },
+      "timer-ring-warn": {
+        "role": "tertiary",
+        "displayName": "Timer Ring Warn",
+        "canonical": "#f2a744",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.021 70)",
+          "oklch(26% 0.062 70)",
+          "oklch(38% 0.106 70)",
+          "oklch(49% 0.142 70)",
+          "oklch(61% 0.142 70)",
+          "oklch(72% 0.106 70)",
+          "oklch(84% 0.062 70)",
+          "oklch(95% 0.021 70)"
+        ]
+      },
+      "timer-ring-up": {
+        "role": "tertiary",
+        "displayName": "Timer Ring Time's Up",
+        "canonical": "#f06b60",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.025 27)",
+          "oklch(26% 0.073 27)",
+          "oklch(38% 0.124 27)",
+          "oklch(49% 0.166 27)",
+          "oklch(61% 0.166 27)",
+          "oklch(72% 0.124 27)",
+          "oklch(84% 0.073 27)",
+          "oklch(95% 0.025 27)"
+        ]
+      },
+      "timer-ring-paused": {
+        "role": "neutral",
+        "displayName": "Timer Ring Paused",
+        "canonical": "#93a39e",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.003 175)",
+          "oklch(26% 0.009 175)",
+          "oklch(38% 0.014 175)",
+          "oklch(49% 0.019 175)",
+          "oklch(61% 0.019 175)",
+          "oklch(72% 0.014 175)",
+          "oklch(84% 0.009 175)",
+          "oklch(95% 0.003 175)"
+        ]
+      },
+      "timer-numeral-warn": {
+        "role": "tertiary",
+        "displayName": "Timer Warn Numeral",
+        "canonical": "#ffd58a",
+        "theme": "both",
+        "tonalRamp": [
+          "oklch(15% 0.016 81)",
+          "oklch(26% 0.046 81)",
+          "oklch(38% 0.078 81)",
+          "oklch(49% 0.104 81)",
+          "oklch(61% 0.104 81)",
+          "oklch(72% 0.078 81)",
+          "oklch(84% 0.046 81)",
+          "oklch(95% 0.016 81)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Winner's name on the game-over card, circled in pencil."
+      },
+      "score-total": {
+        "displayName": "Score total",
+        "purpose": "Per-row total on the Scores board, in graphite; red pencil when negative."
+      },
+      "game-name": {
+        "displayName": "Game name",
+        "purpose": "Editable game title in the teal header band."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section and card headings (h2)."
+      },
+      "timer-numeral": {
+        "displayName": "Timer numeral",
+        "purpose": "Countdown in the full-screen timer; min(24vw,16vh,130px) for long values."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base text."
+      },
+      "player-name": {
+        "displayName": "Player name",
+        "purpose": "Names on the Scores board; other lists use weight 700."
+      },
+      "sub": {
+        "displayName": "Sub",
+        "purpose": "Second lines such as \"N behind\", in muted."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Column heads, table heads, form labels, chips and round-type stamps; uppercase, teal."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet-action-lip",
+        "value": "0 -10px 12px -10px rgba(0,0,0,.18)",
+        "purpose": "Upper edge of a sheet's sticky action row."
+      },
+      {
+        "name": "segment-selected",
+        "value": "0 1px 3px rgba(0,0,0,.15), inset 0 0 0 1px var(--field-line)",
+        "purpose": "Selected option in a segmented control."
+      },
+      {
+        "name": "field-focus-halo",
+        "value": "0 0 0 2px var(--accent-soft)",
+        "purpose": "With the teal border on a focused field."
+      },
+      {
+        "name": "selected-ring",
+        "value": "inset 0 0 0 1px var(--accent)",
+        "purpose": "Doubles the teal border on a selected chip or preset."
+      },
+      {
+        "name": "scrim",
+        "value": "rgba(5,12,10,.5)",
+        "purpose": "Background behind every sheet (a fill, not a shadow)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "pencil-draw",
+        "value": "0.7s cubic-bezier(.5,0,.3,1) 0.1s",
+        "purpose": "Pencil ring stroke draws itself when the lead changes."
+      },
+      {
+        "name": "winner-tile-drop",
+        "value": "0.7s cubic-bezier(.2,1.4,.4,1), 90ms stagger",
+        "purpose": "Initial boxes drop in with a tilt on the game-over card."
+      },
+      {
+        "name": "winner-rise",
+        "value": "0.5s cubic-bezier(.16,1,.3,1) 0.25s",
+        "purpose": "Winner label, name and score rise in."
+      },
+      {
+        "name": "timer-state",
+        "value": "background 0.25s",
+        "purpose": "Timer ground cross-fades between states."
+      },
+      {
+        "name": "timer-hit",
+        "value": "0.22s ease-out",
+        "purpose": "Dial scales in from 0.92 on each tap-to-restart."
+      },
+      {
+        "name": "timer-pulse",
+        "value": "1s ease-in-out infinite",
+        "purpose": "Time's-up numeral pulses to 45% opacity."
+      },
+      {
+        "name": "chevron",
+        "value": "transform 0.15s",
+        "purpose": "History entry chevron rotates 90deg when open."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "All transitions and animations off; pencil ring shown complete."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "column",
+        "value": "720px",
+        "purpose": "Max width of the single column and the bottom bar."
+      },
+      {
+        "name": "sheet",
+        "value": "600px",
+        "purpose": "Max width of bottom sheets."
+      },
+      {
+        "name": "winner-card",
+        "value": "440px",
+        "purpose": "Max width of the game-over card."
+      }
+    ],
+    "themes": {
+      "light": ":root",
+      "dark": [
+        "@media (prefers-color-scheme: dark) { :root:not([data-theme=\"light\"]) }",
+        ":root[data-theme=\"dark\"]"
+      ],
+      "setting": "Auto removes data-theme; Light/Dark set data-theme on <html>; meta theme-color follows (#0e6b5c / #2fae94)."
+    },
+    "fonts": [
+      {
+        "family": "Archivo",
+        "file": "fonts/archivo.woff2",
+        "weights": "100 900",
+        "stretch": "62% 125%",
+        "license": "SIL OFL 1.1"
+      },
+      {
+        "family": "Figtree",
+        "file": "fonts/figtree.woff2",
+        "weights": "300 900",
+        "license": "SIL OFL 1.1"
+      },
+      {
+        "family": "Oswald",
+        "file": "fonts/oswald-600.woff2",
+        "weights": "600",
+        "license": "SIL OFL 1.1"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Header Band",
+      "kind": "nav",
+      "refersTo": "header-band",
+      "description": "Full-bleed printed teal band: editable game name left, outlined New game right.",
+      "html": "<header class=\"ds-band\"><input class=\"ds-gname\" value=\"Rummikub\" aria-label=\"Game name\"><button class=\"ds-band-btn\">New game</button></header>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-band{display:flex;gap:10px;align-items:center;background:var(--accent);color:var(--accent-ink);padding:16px}.ds-gname{flex:1;min-width:0;font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:1.5rem;letter-spacing:-.01em;background:transparent;border:0;border-bottom:2px dashed transparent;color:inherit;padding:2px 0}.ds-gname:hover,.ds-gname:focus{border-bottom-color:var(--band-line);outline:none}.ds-band-btn{font:700 .88rem \"Figtree\",system-ui,sans-serif;background:transparent;color:inherit;border:1px solid var(--band-line);border-radius:10px;padding:6px 12px;min-height:44px;cursor:pointer}.ds-band-btn:focus-visible{outline:3px solid var(--accent-ink);outline-offset:2px}"
+    },
+    {
+      "name": "Underline Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Five equal tabs on a 2px rule; the selected tab is ink with a 3px teal underline.",
+      "html": "<nav class=\"ds-tabs\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\">Scores</button><button role=\"tab\" aria-selected=\"false\">Rounds</button><button role=\"tab\" aria-selected=\"false\">Timer</button><button role=\"tab\" aria-selected=\"false\">Players</button><button role=\"tab\" aria-selected=\"false\">History</button></nav>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-tabs{display:flex;justify-content:space-between;gap:6px;border-bottom:2px solid var(--line);background:var(--bg);padding-top:6px}.ds-tabs button{font:700 .9rem \"Figtree\",system-ui,sans-serif;color:var(--muted);background:transparent;border:0;border-radius:0;border-bottom:3px solid transparent;margin-bottom:-2px;padding:10px 2px 9px;min-height:44px;cursor:pointer}.ds-tabs button:hover{color:var(--ink)}.ds-tabs button[aria-selected=\"true\"]{color:var(--ink);border-bottom-color:var(--accent)}.ds-tabs button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Score Board",
+      "kind": "custom",
+      "refersTo": "score-row",
+      "description": "Column heads over a teal rule, ruled rows with rank, outlined initial box, name with gap line, graphite total; the leader total carries the pencil ring.",
+      "html": "<div class=\"ds-board\"><div class=\"ds-colhead\"><span class=\"ds-c1\">#</span><span class=\"ds-c2\">Player · 3 rounds</span><span>Total</span></div><ol><li class=\"ds-row\"><span class=\"ds-rank\">1</span><span class=\"ds-tile\" style=\"--pc:var(--t0)\">A</span><span class=\"ds-name\">Ana<span class=\"ds-gap\">Leading</span></span><span class=\"ds-total\">27<svg class=\"ds-ring\" viewBox=\"0 0 100 60\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path pathLength=\"100\" d=\"M60 6 C 30 2, 6 12, 6 30 C 6 50, 40 57, 66 54 C 92 51, 97 34, 92 20 C 88 9, 70 3, 48 7\"/></svg></span></li><li class=\"ds-row\"><span class=\"ds-rank\">2</span><span class=\"ds-tile\" style=\"--pc:var(--t2)\">D</span><span class=\"ds-name\">Dee<span class=\"ds-gap\">29 behind</span></span><span class=\"ds-total\">−2</span></li><li class=\"ds-row\"><span class=\"ds-rank\">3</span><span class=\"ds-tile\" style=\"--pc:var(--t1)\">M</span><span class=\"ds-name\">Marcus<span class=\"ds-gap\">43 behind</span></span><span class=\"ds-total ds-neg\">−16</span></li></ol></div>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-board{background:var(--bg);color:var(--ink);font-family:\"Figtree\",system-ui,sans-serif;padding:14px 16px}.ds-board ol{list-style:none;margin:0;padding:0}.ds-colhead{display:flex;align-items:flex-end;gap:12px;padding:0 4px 6px;border-bottom:2px solid var(--accent)}.ds-colhead span{font-family:\"Oswald\",\"Archivo\",system-ui,sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-size:.74rem}.ds-c1{width:1.6rem;text-align:center}.ds-c2{flex:1}.ds-row{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:14px 4px}.ds-rank{width:1.6rem;text-align:center;font-family:\"Oswald\",sans-serif;font-weight:600;font-size:1.02rem;color:var(--muted);font-variant-numeric:tabular-nums}.ds-tile{flex:none;width:2.1rem;height:2.1rem;display:grid;place-items:center;border:1.5px solid var(--pc);border-radius:7px;color:var(--pc);font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:1rem}.ds-name{flex:1;min-width:0;font-weight:800;font-size:1.1rem}.ds-gap{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-top:1px}.ds-total{position:relative;font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:2rem;letter-spacing:-.01em;color:var(--graphite);font-variant-numeric:tabular-nums;padding:0 8px;margin-right:6px}.ds-neg{color:var(--bad)}.ds-ring{position:absolute;left:-14px;top:-9px;width:calc(100% + 28px);height:calc(100% + 18px);overflow:visible;pointer-events:none}.ds-ring path{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;animation:ds-pencil .7s cubic-bezier(.5,0,.3,1) .1s forwards}@keyframes ds-pencil{to{stroke-dashoffset:0}}@media (prefers-reduced-motion:reduce){.ds-ring path{animation:none;stroke-dashoffset:0}}"
+    },
+    {
+      "name": "Outlined Initial Boxes",
+      "kind": "custom",
+      "refersTo": "initial-box",
+      "description": "Player marks in the four tile colours: outline and letter in the colour, transparent ground.",
+      "html": "<div class=\"ds-tiles\"><span class=\"ds-tile\" style=\"--pc:var(--t0)\">A</span><span class=\"ds-tile\" style=\"--pc:var(--t1)\">M</span><span class=\"ds-tile\" style=\"--pc:var(--t2)\">D</span><span class=\"ds-tile\" style=\"--pc:var(--t3)\">J</span><span class=\"ds-tile ds-sm\" style=\"--pc:var(--t0)\">An</span></div>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-tiles{display:flex;gap:10px;align-items:center;padding:12px;background:var(--bg)}.ds-tile{width:2.1rem;height:2.1rem;display:grid;place-items:center;border:1.5px solid var(--pc);border-radius:7px;color:var(--pc);background:transparent;font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:1rem}.ds-sm{width:1.7rem;height:1.7rem;border-radius:6px;font-size:.7rem}"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Teal fill for the main action; the full-width bottom-bar version is \"+ Score a round\".",
+      "html": "<button class=\"ds-btn ds-primary\">+ Score a round</button>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-btn{font:700 .95rem \"Figtree\",system-ui,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}.ds-primary{width:100%;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);padding:16px;border-radius:12px;font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:1.1rem}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.ds-btn:disabled{opacity:.45;cursor:not-allowed}"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Sheet-white outlined button for secondary actions.",
+      "html": "<button class=\"ds-btn\">Add player</button>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-btn{font:700 .95rem \"Figtree\",system-ui,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}.ds-btn:hover{border-color:var(--field-line)}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Two-tap Danger Button",
+      "kind": "button",
+      "refersTo": "button-armed",
+      "description": "Red-pencil text at rest; armed (filled red) after the first tap, confirmed by the second.",
+      "html": "<div class=\"ds-row2\"><button class=\"ds-btn ds-danger\">Delete round</button><button class=\"ds-btn ds-armed\">Tap again to delete</button></div>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-row2{display:flex;gap:8px;flex-wrap:wrap}.ds-btn{font:700 .95rem \"Figtree\",system-ui,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}.ds-danger{color:var(--bad)}.ds-armed{background:var(--bad);color:#fff;border-color:var(--bad)}.ds-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Sheet-white field with a darker field rule; teal border and wash halo on focus.",
+      "html": "<input class=\"ds-field\" placeholder=\"Player name\">",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-field{font:400 16px \"Figtree\",system-ui,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--field-line);border-radius:8px;padding:10px 12px}.ds-field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}"
+    },
+    {
+      "name": "Display Setting",
+      "kind": "chip",
+      "refersTo": "segmented",
+      "description": "Auto / Light / Dark segmented control; the selected option is a raised sheet-white tab.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Light or dark\"><button aria-pressed=\"true\">Auto</button><button aria-pressed=\"false\">Light</button><button aria-pressed=\"false\">Dark</button></div>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--sunk);border-radius:10px}.ds-seg button{font:700 1rem \"Figtree\",system-ui,sans-serif;border:0;background:transparent;color:var(--muted);border-radius:9px;padding:10px;cursor:pointer}.ds-seg button:hover{color:var(--ink)}.ds-seg button[aria-pressed=\"true\"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15),inset 0 0 0 1px var(--field-line)}.ds-seg button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Timer Presets",
+      "kind": "chip",
+      "refersTo": "segmented-active",
+      "description": "Pill chips with tabular figures; selected adds teal border, inset ring and teal wash.",
+      "html": "<div class=\"ds-presets\"><button aria-pressed=\"false\">0:30</button><button aria-pressed=\"true\">1:00</button><button aria-pressed=\"false\">2:00</button></div>",
+      "css": ":host{--bg:#f7f8f7;--surface:#fff;--sunk:#f0f4f2;--ink:#1d2523;--graphite:#384140;--muted:#56645f;--line:#d3e4de;--field-line:#74867f;--accent:#0e6b5c;--accent-ink:#fff;--accent-soft:#dff0eb;--band-line:rgba(255,255,255,.45);--t0:#c62f2f;--t1:#1f5fbf;--t2:#a35c00;--t3:#1d1d1d;--bad:#c23a2b;--good:#1b7a43}.ds-presets{display:flex;gap:6px;flex-wrap:wrap}.ds-presets button{font:700 1rem \"Figtree\",system-ui,sans-serif;font-variant-numeric:tabular-nums;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 13px;min-height:44px;cursor:pointer}.ds-presets button[aria-pressed=\"true\"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}.ds-presets button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Turn Timer Dial",
+      "kind": "custom",
+      "refersTo": "timer-run",
+      "description": "Full-screen dark timer: radial glow, track and progress arc in the state ring colour, huge tabular numeral.",
+      "html": "<div class=\"ds-tmr\" data-state=\"run\"><div class=\"ds-dial\"><svg viewBox=\"0 0 100 100\" aria-hidden=\"true\"><circle class=\"ds-trk\" cx=\"50\" cy=\"50\" r=\"46\"/><circle class=\"ds-arc\" cx=\"50\" cy=\"50\" r=\"46\" pathLength=\"100\" style=\"stroke-dasharray:62 100\"/></svg><span class=\"ds-num\">38</span></div></div>",
+      "css": ".ds-tmr{--tbg:#0b2b25;--ring:#3db49a;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--ring) 22%,var(--tbg)),var(--tbg) 70%);color:#fff;transition:background .25s}.ds-tmr[data-state=\"warn\"]{--tbg:#3a2105;--ring:#f2a744}.ds-tmr[data-state=\"warn\"] .ds-num{color:#ffd58a}.ds-tmr[data-state=\"up\"]{--tbg:#4a100d;--ring:#f06b60}.ds-tmr[data-state=\"paused\"]{--tbg:#161d1b;--ring:#93a39e}.ds-dial{position:relative;width:220px;aspect-ratio:1;display:grid;place-items:center}.ds-dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.ds-dial circle{fill:none;stroke-width:5}.ds-trk{stroke:rgba(255,255,255,.14)}.ds-arc{stroke:var(--ring);stroke-linecap:round}.ds-num{font-family:\"Archivo\",system-ui,sans-serif;font-stretch:84%;font-weight:700;font-size:96px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Family Score Pad",
+    "overview": "The app is the score pad that lives in the game drawer: a printed form in one teal ink, filled in by hand in graphite pencil. Everything printed (the header band, the column heads, the rules under them, the active-tab underline) is teal. Everything written by the scorekeeper (totals, round values, player names) is graphite or ink. The leader's total is circled in pencil, and the circle is drawn again whenever the lead changes hands.\n\nIt is one narrow column, built to be held in one hand and glanced at from across the table. Rows are separated by ruled lines, not boxed into cards. Players are marked with outlined initial boxes in the four tile colours (red, blue, orange, black), so a player can be found by colour before their name is read. Density is calm: a few ranked rows, very large tabular totals, and a pinned \"+ Score a round\" bar at the thumb.\n\nThe world rejects the stock card-list scoreboard: rounded white cards on grey, pill-shaped tabs, a filled highlight behind the leader. It avoids childish, busy, flashy or overly serious registers. It follows the phone's light and dark setting, with a manual override.",
+    "keyCharacteristics": [
+      "Printed teal for the form, graphite for the filled-in values, red pencil for negatives.",
+      "One column, max 720px, 16px gutters, ruled rows.",
+      "Semi-condensed Archivo numerals (84% width) with tabular figures for every score.",
+      "Oswald small-caps column heads in teal over a 2px teal rule.",
+      "Outlined initial boxes in four tile colours.",
+      "The pencil ring around the leader's total is the signature.",
+      "Light pad (near-white) and night pad (deep green-black); the timer is always dark."
+    ],
+    "rules": [
+      {
+        "name": "The One Ink Rule",
+        "body": "Printed parts of the form (band, heads, rules, underline, ring, focus) are teal and only teal. Nothing else on the pad gets a brand colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pencil Rule",
+        "body": "Numbers the scorekeeper wrote are graphite. Negatives switch to red pencil. Totals are never teal and never sit on a coloured fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tile Colours Are Names Rule",
+        "body": "The four tile colours mark players and nothing else. They never carry status, ranking or emphasis.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Every score, total, rank and timer value uses tabular figures, so columns of numbers line up like a ruled form.",
+        "section": "typography"
+      },
+      {
+        "name": "The Narrow Numeral Rule",
+        "body": "Archivo is always set at 84% width when it is used for headings or numbers. It never appears at full width.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Pad Rule",
+        "body": "Nothing on the pad casts a shadow. Only sheets and the controls inside them are lifted, and only by a small amount.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do draw every printed element (band, heads, rules, active underline, ring, focus) in Printed Teal and nothing else.",
+      "Do write numbers in Graphite, with tabular figures, in Archivo at 84% width; switch to Red Pencil for negatives.",
+      "Do separate list items with 1px ruled lines on the pad; save bordered 10px containers for cards, tables and history entries.",
+      "Do mark players with outlined initial boxes in their tile colour (colour index mod 4).",
+      "Do mark the leader with the pencil ring only, redrawn when the lead changes and shown complete under reduced motion.",
+      "Do put column and table heads in Oswald 600 uppercase at 0.08em tracking, teal, over a 2px teal rule.",
+      "Do define every colour as a token in both the light block and the two dark blocks (`prefers-color-scheme` without `data-theme=\"light\"`, and `data-theme=\"dark\"`).",
+      "Do keep touch targets at least 44px and keep the primary action in the pinned bottom bar."
+    ],
+    "donts": [
+      "Don't box board rows into rounded cards on a grey ground, or use pill-filled tabs; that is the stock scoreboard this world replaces.",
+      "Don't highlight the leader with a fill, a border, a badge or a shadow; the ring is the only leader mark.",
+      "Don't use the tile colours for status, emphasis or anything other than identifying a player.",
+      "Don't add shadows to anything on the pad; only sheets and their controls lift.",
+      "Don't set Archivo at full width or use proportional figures for scores.",
+      "Don't fill tile boxes solid or give them the old raised tile edge; they are outlined in pencil."
+    ]
+  }
+}
