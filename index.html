@@ -54,11 +54,9 @@ button{cursor:pointer}
 .wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 140px}
 
 header{display:flex;flex-direction:column;gap:10px}
-.brand{display:flex;align-items:center;justify-content:center;gap:10px}
-.brand h1{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:.08em;text-transform:uppercase;margin:0;color:var(--accent)}
-.gname-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.gbtns{display:flex;gap:8px}
-#gname{flex:1 1 220px;min-width:0;font-family:var(--display);font-weight:600;font-size:1.6rem;background:transparent;border:0;border-bottom:2px dashed transparent;padding:2px 0;border-radius:0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.gname-row{display:flex;gap:10px;align-items:center}
+#gname{flex:1 1 auto;min-width:0;font-family:var(--display);font-weight:600;font-size:1.6rem;background:transparent;border:0;border-bottom:2px dashed transparent;padding:2px 0;border-radius:0;text-overflow:ellipsis}
 #gname:hover,#gname:focus{border-bottom-color:var(--line);outline:none}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;font-weight:700;font-size:.95rem;white-space:nowrap}
 .btn:active{transform:translateY(1px)}
@@ -66,14 +64,15 @@ header{display:flex;flex-direction:column;gap:10px}
 .btn.ghost{background:transparent}
 .btn.danger{color:var(--bad)}
 .btn.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
-.btn.small{padding:6px 10px;font-size:.85rem;border-radius:8px}
+.btn.small{padding:6px 12px;font-size:.88rem;border-radius:10px;min-height:44px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 
-.banner{background:var(--warn-bg);color:var(--warn-ink);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.banner p{margin:0;flex:1;min-width:200px;font-size:.92rem}
+.banner{background:var(--warn-bg);color:var(--warn-ink);border-radius:12px;padding:6px 6px 6px 14px;display:flex;gap:10px;align-items:center;margin-top:10px}
+.banner p{margin:0;flex:1;min-width:0;font-size:.92rem;font-weight:600}
+.banner .btn{background:transparent;border-color:currentColor;color:inherit}
 
 nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding-block:12px;margin-top:4px}
-nav.tabs button{border:0;background:var(--sunk);border-radius:10px;padding:10px 1px;font-weight:700;font-size:.86rem;color:var(--muted);min-width:0}
+nav.tabs button{border:0;background:var(--sunk);border-radius:10px;padding:10px 1px;min-height:44px;font-weight:700;font-size:.86rem;color:var(--muted);min-width:0}
 nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 
 .meta{color:var(--muted);font-size:.9rem;margin:2px 0 12px}
@@ -169,7 +168,9 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
 .hbody tbody tr{cursor:default}
 tbody tr.static{cursor:default}
 tbody tr.static td{color:var(--muted)}
-.btn.end{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.endrow{margin-top:18px}
+.endrow .btn{width:100%;min-height:48px;background:transparent;color:var(--muted)}
+.btn.link{border:0;background:transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:44px;font-weight:700}
 .chip{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
 #winbg{align-items:center;padding:16px}
 #win{border-radius:18px;max-width:440px;padding-top:24px;padding-bottom:18px}
@@ -222,31 +223,30 @@ label.pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:po
 
 <div class="wrap">
   <header>
-    <div class="brand"><h1>Game Night</h1></div>
+    <h1 class="sr-only">Game Night</h1>
     <div class="gname-row">
       <input id="gname" aria-label="Game name" maxlength="40">
-      <span class="gbtns"><button class="btn small primary" data-act="new-game">New game</button>
-      <button class="btn small end" data-act="end-game">End game</button></span>
+      <button class="btn small" data-act="new-game">New game</button>
     </div>
   </header>
   <div class="banner" id="exbanner" hidden>
-    <p>This is an example game so you can see how it works. Start fresh to clear these players and add your own.</p>
+    <p>This is an example game.</p>
     <button class="btn small" data-act="fresh">Start fresh</button>
   </div>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" data-act="tab" data-tab="scores">Scores</button>
-    <button role="tab" data-act="tab" data-tab="rounds">Rounds</button>
-    <button role="tab" data-act="tab" data-tab="timer">Timer</button>
-    <button role="tab" data-act="tab" data-tab="players">Players</button>
-    <button role="tab" data-act="tab" data-tab="history">History</button>
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" id="tab-scores" aria-controls="v-scores" data-act="tab" data-tab="scores">Scores</button>
+    <button role="tab" id="tab-rounds" aria-controls="v-rounds" data-act="tab" data-tab="rounds">Rounds</button>
+    <button role="tab" id="tab-timer" aria-controls="v-timer" data-act="tab" data-tab="timer">Timer</button>
+    <button role="tab" id="tab-players" aria-controls="v-players" data-act="tab" data-tab="players">Players</button>
+    <button role="tab" id="tab-history" aria-controls="v-history" data-act="tab" data-tab="history">History</button>
   </nav>
 
-  <section id="v-scores"></section>
-  <section id="v-rounds" hidden></section>
-  <section id="v-players" hidden></section>
-  <section id="v-history" hidden></section>
-  <section id="v-timer" hidden></section>
+  <section id="v-scores" role="tabpanel" aria-labelledby="tab-scores"></section>
+  <section id="v-rounds" role="tabpanel" aria-labelledby="tab-rounds" hidden></section>
+  <section id="v-players" role="tabpanel" aria-labelledby="tab-players" hidden></section>
+  <section id="v-history" role="tabpanel" aria-labelledby="tab-history" hidden></section>
+  <section id="v-timer" role="tabpanel" aria-labelledby="tab-timer" hidden></section>
 </div>
 
 <div class="bar"><div class="in"><button class="btn primary" data-act="open-round">+ Score a round</button></div></div>
@@ -406,12 +406,13 @@ function showWinner(h){
     html+=`<span class="label">Final scores · ${rl}</span>${miniList(st.players,true)}`}
   html+=`<span class="hint">Saved to History.</span>
     <button class="btn primary go" data-act="win-close">Play again · same ${st.teamScored?'teams':'players'}</button>
-    <div class="actions"><button class="btn grow" data-act="win-history">View history</button><button class="btn grow" data-act="win-again">New game</button></div>`;
+    <div class="actions"><button class="btn grow" data-act="win-history">View history</button><button class="btn grow" data-act="win-again">New game</button></div>
+    ${lastEnd&&lastEnd.id===h.id?'<button class="btn link" data-act="win-undo">Not done yet? Undo and keep playing</button>':''}`;
   $('#win').innerHTML=html;$('#winbg').hidden=false;
 }
 function renderHistory(){
   const H=S.history;
-  if(!H.length){$('#v-history').innerHTML=`<div class="empty"><p>No finished games yet. When you tap “New game,” the game you just played is saved here with its final scores.</p></div>`;return}
+  if(!H.length){$('#v-history').innerHTML=`<div class="empty"><p>No finished games yet. When you end a game or start a new one, it’s saved here with its final scores.</p></div>`;return}
   let h=`<p class="meta">${H.length} finished game${H.length>1?'s':''} saved on this device. Tap one to see the full scores.</p><div class="hlist">`;
   H.forEach(g=>{
     const st=histStandings(g),open=openHist.has(g.id);
@@ -450,7 +451,7 @@ function renderScores(){
     ids.forEach((id,i)=>{if(t[id]!==prev){rank=i+1;prev=t[id]}const lead=n&&t[id]===top;
       html+=`<li class="row${lead?' lead':''}"><span class="rank">${rank}</span>${tileHTML(id)}<span class="name">${esc(P(id).name)}${lead?'<span class="badge">Leading</span>':''}</span><span class="total${numCls(t[id])}">${fmt(t[id])}</span></li>`});
   }
-  $('#v-scores').innerHTML=html+'</ol>';
+  $('#v-scores').innerHTML=html+'</ol>'+(n?'<div class="endrow"><button class="btn" data-act="end-game">End game and show the winner</button></div>':'');
 }
 
 function renderRounds(){
@@ -693,6 +694,7 @@ function tmSetFromInputs(){
 /* ---------- helpers ---------- */
 let toastTimer,undoFn=null;
 function toast(msg,undo,ms){const el=$('#toast');undoFn=undo||null;el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-act="toast-undo">Undo</button>':''}`;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.hidden=true;undoFn=null},ms||(undo?6000:2200))}
+let lastEnd=null;
 function twoTap(btn,fn){
   if(btn.dataset.armed){delete btn.dataset.armed;btn.textContent=btn.dataset.old;btn.classList.remove('armed');fn();return}
   const old=btn.textContent;btn.dataset.old=old;btn.dataset.armed='1';btn.textContent='Tap again to confirm';btn.classList.add('armed');
@@ -701,7 +703,7 @@ function twoTap(btn,fn){
 
 document.addEventListener('click',e=>{
   if(e.target===$('#sheetbg')){closeEditor();return}
-  if(e.target===$('#winbg')){$('#winbg').hidden=true;return}
+  if(e.target===$('#winbg')){$('#winbg').hidden=true;lastEnd=null;toast('Same players, fresh scores. Good luck!');return}
   if(e.target===$('#ngbg')){closeNew();return}
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,g=S.game;
@@ -714,8 +716,10 @@ document.addEventListener('click',e=>{
     case 'ng-start':startNew();break;
     case 'end-game':
       if(!g.rounds.length){toast('Score at least one round first');break}
-      twoTap(b,()=>{archive(g);const rec=S.history[0];S.game=newGame(g.players,g.name,[],g);S.tab='scores';renderAll();showWinner(rec)});break;
-    case 'win-again':$('#winbg').hidden=true;openNew();break;
+      {archive(g);const rec=S.history[0];lastEnd={game:g,id:rec.id};S.game=newGame(g.players,g.name,[],g);S.tab='scores';renderAll();window.scrollTo({top:0});showWinner(rec)}break;
+    case 'win-undo':
+      if(lastEnd&&S.history[0]&&S.history[0].id===lastEnd.id){S.history.shift();S.game=lastEnd.game;lastEnd=null;$('#winbg').hidden=true;renderAll();toast('Back to your game')}break;
+    case 'win-again':$('#winbg').hidden=true;lastEnd=null;openNew();break;
     case 'win-history':$('#winbg').hidden=true;S.tab='history';openHist.add(S.history[0]&&S.history[0].id);renderAll();window.scrollTo({top:0});break;
     case 'hist-toggle':openHist.has(id)?openHist.delete(id):openHist.add(id);renderHistory();break;
     case 'hist-del':twoTap(b,()=>{const i=S.history.findIndex(x=>x.id===id);const gone=S.history.splice(i,1)[0];openHist.delete(id);renderAll();toast('Game deleted',()=>{S.history.splice(i,0,gone);renderAll()})});break;
@@ -723,7 +727,7 @@ document.addEventListener('click',e=>{
     case 'undo':{const r=g.rounds.pop();const n=g.rounds.length+1;renderAll();toast(`Round ${n} removed`,()=>{S.game.rounds.push(r);renderAll()});break}
     case 'toast-undo':if(undoFn){undoFn();undoFn=null}$('#toast').hidden=true;break;
     case 'del-player':twoTap(b,()=>{S.roster=S.roster.filter(p=>p.id!==id);g.players=g.players.filter(x=>x!==id);delete g.teamOf[id];renderAll()});break;
-    case 'win-close':$('#winbg').hidden=true;toast('Same players, fresh scores. Good luck!');break;
+    case 'win-close':$('#winbg').hidden=true;lastEnd=null;toast('Same players, fresh scores. Good luck!');break;
     case 'ng-all':{const all=!ng.sel.size;ng.sel=new Set(all?S.roster.map(p=>p.id):[]);document.querySelectorAll('[data-ngp]').forEach(c=>c.checked=all);ngSync();break}
     case 'ng-add-team':ng.teams.push({id:uid(),name:'Team '+String.fromCharCode(65+ng.teams.length%26)});renderNgTeams();break;
     case 'ng-del-team':ng.teams=ng.teams.filter(t=>t.id!==id);for(const k in ng.teamOf)if(ng.teamOf[k]===id)delete ng.teamOf[k];renderNgTeams();break;
