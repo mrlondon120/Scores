@@ -26,7 +26,7 @@
   --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#dff0eb; --band-line:rgba(255,255,255,.45);
   --tile:#ffffff; --tile-edge:#d3e4de;
   --t0:#c62f2f; --t1:#1f5fbf; --t2:#a35c00; --t3:#1d1d1d;
-  --good:#1b7a43; --bad:#c23a2b; --warn-bg:#fdf3dc; --warn-ink:#6b4a00;
+  --good:#0e6b5c; --bad:#c23a2b; --warn-bg:#fdf3dc; --warn-ink:#6b4a00;
   --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
   --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --form:"Oswald","Archivo",system-ui,sans-serif;
@@ -36,7 +36,7 @@
   --accent:#2fae94; --accent-ink:#03201a; --accent-soft:#123029; --band-line:rgba(3,32,26,.45);
   --tile:#141d1b; --tile-edge:#21392f;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
-  --good:#5cc98a; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
+  --good:#2fae94; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -44,7 +44,7 @@
   --accent:#2fae94; --accent-ink:#03201a; --accent-soft:#123029; --band-line:rgba(3,32,26,.45);
   --tile:#141d1b; --tile-edge:#21392f;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
-  --good:#5cc98a; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
+  --good:#2fae94; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -196,7 +196,7 @@ tbody tr.static td{color:var(--muted)}
 .wtiles{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
 .winner .tile{width:3.6rem;height:4.4rem;font-size:2rem;border-radius:10px;box-shadow:0 4px 0 var(--tile-edge)}
 .wt{display:block;animation:wdrop .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i)*90ms)}
-.winner .label,.wname,.wscore{animation:wrise .5s cubic-bezier(.16,1,.3,1) .25s both}
+.wname,.wscore{animation:wrise .5s cubic-bezier(.16,1,.3,1) .25s both}
 @keyframes wdrop{0%{transform:translateY(-46px) rotate(-12deg);opacity:0}60%{opacity:1}100%{transform:none}}
 @keyframes wrise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
 .wname{font-family:var(--display);font-weight:700;font-size:2.1rem;line-height:1.1;text-wrap:balance;overflow-wrap:anywhere}
@@ -301,6 +301,36 @@ tr.sum td{background:var(--sunk);color:var(--ink)}
 .bar .btn{font-weight:700;border-radius:12px}
 .toast button{color:var(--accent-soft)}
 :root[data-theme="dark"] .toast button{color:var(--accent-ink)}
+/* Pad sections instead of cards (Players, Timer, History) */
+.card{background:transparent;border:0;border-radius:0;padding:0 0 20px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.card>h2:first-child,.card>.section-head:first-child{padding-bottom:7px;border-bottom:2px solid var(--accent);margin-bottom:2px}
+.card .section-head h2{padding:0;border:0}
+.hlist{gap:0;border-top:2px solid var(--accent)}
+.hgame{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0}
+.hhead{padding:14px 4px}
+.hbody{border-top:1px dashed var(--line);padding:12px 4px 16px}
+.ringed{position:relative;display:inline-block;padding:2px 10px}
+.ringed .ring{left:-4px;top:-4px;width:calc(100% + 8px);height:calc(100% + 8px)}
+/* Rounds as a ruled grid */
+.tablewrap{background:transparent;border:0;border-radius:0}
+th:first-child,td:first-child{background:var(--bg)}
+td{font-family:var(--display);font-stretch:84%;font-weight:600;font-size:1.02rem}
+td:first-child{font-family:var(--form);font-stretch:normal;color:var(--muted)}
+tr.sum td,tr.sum td:first-child{background:var(--bg);font-weight:800;border-bottom:2px solid var(--accent)}
+tr.sum td:first-child{font-family:var(--display);color:var(--ink)}
+/* Timer settings as form boxes */
+.presets button{border-radius:8px;border-color:var(--field-line)}
+.seg button[aria-pressed="true"]{box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent)}
+/* Label suffixes and browser surfaces */
+.label .lsub{font-family:var(--body);text-transform:none;letter-spacing:0;font-weight:600;color:var(--muted)}
+.antoggle{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;cursor:pointer;font:inherit}
+.antoggle:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.allnights .chev{font-size:1.4rem}
+.allnights.open .chev{transform:rotate(90deg)}
+#anbody{display:flex;flex-direction:column;gap:10px}
+#anbody[hidden]{display:none}
+::selection{background:var(--accent-soft);color:var(--ink)}
+input,textarea{caret-color:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.ring.draw path{stroke-dashoffset:0}}
 </style>
 </head>
@@ -496,9 +526,7 @@ function miniList(items,withTiles){
 }
 function showWinner(h){
   const st=histStandings(h),w=st.winnerItems[0],tie=st.winners.length>1;
-  let html=`<div class="winner"><div class="wtiles">${st.teams||!w?'':st.winnerItems.map((x,i)=>`<span class="wt" style="--i:${i}">${tileFor(x.name,x.c)}</span>`).join('')}</div><span class="label">${tie?'It’s a tie':'Winner'}</span>
-    <div class="wname">${esc(st.winners.join(' & '))}${ringSVG(true)}</div>
-    <div class="wscore">${fmt(st.top)} points${h.lowWins?' · lowest score wins':''}</div></div>`;
+  let html=`<div class="winner"><div class="wtiles">${st.teams||!w?'':st.winnerItems.map((x,i)=>`<span class="wt" style="--i:${i}">${tileFor(x.name,x.c)}</span>`).join('')}</div>${tie?`<div class="wname">It’s a tie${ringSVG(true)}</div><div class="wscore">${esc(st.winners.join(' & '))} · ${fmt(st.top)} points</div>`:`<div class="wname">${esc(st.winners[0])}${ringSVG(true)}</div><div class="wscore">${fmt(st.top)} points${h.lowWins?' · lowest score wins':''}</div>`}</div>`;
   const rl=`${h.rounds.length} round${h.rounds.length>1?'s':''}`;
   if(st.teamScored)html+=`<span class="label">Final scores · ${rl}</span>${miniList(st.teams,false)}`;
   else{if(st.teams)html+=`<span class="label">Teams</span>${miniList(st.teams,false)}`;
@@ -521,10 +549,11 @@ function allNightsHTML(H){
   const a=allNights(H);if(!a.games)return '';
   const top=a.rows.length?a.rows[0].wins:0;
   const lastName=a.streak&&a.streak.id?(S.roster.find(p=>p.id===a.streak.id)||H.filter(g=>!g.teamsOn)[0].players.find(p=>p.id===a.streak.id)||{name:'?'}).name:null;
-  const line=lastName?`Last winner: <b>${esc(lastName)}</b>${a.streak.n>1?` · ${a.streak.n} in a row`:''}`:'The last game was a tie.';
-  return `<div class="card allnights"><h2>All nights</h2><p class="anline">${line}</p>
-  <ul class="mini">${a.rows.map(r=>`<li class="${top&&r.wins===top?'first':''}">${tileFor(r.name,r.c,true)}<span class="n">${esc(r.name)}</span><span class="an">${r.wins} win${r.wins===1?'':'s'} <span>of ${r.played}</span></span></li>`).join('')}</ul>
-  <span class="hint">${a.games} game${a.games>1?'s':''} counted${a.ties?`, ${a.ties} tied (no win)`:''}${a.teamN?`. ${a.teamN} team game${a.teamN>1?'s':''} not counted`:''}.</span></div>`;
+  const line=lastName?`Last winner: <b class="ringed">${esc(lastName)}${ringSVG(false)}</b>${a.streak.n>1?` · ${a.streak.n} in a row`:''}`:'The last game was a tie.';
+  const open=!S.anClosed;
+  return `<div class="card allnights${open?' open':''}"><h2><button class="antoggle" data-act="an-toggle" aria-expanded="${open}" aria-controls="anbody">All nights<span class="chev" aria-hidden="true">›</span></button></h2><p class="anline">${line}</p>
+  <div id="anbody"${open?'':' hidden'}><ul class="mini">${a.rows.map(r=>`<li class="${top&&r.wins===top?'first':''}">${tileFor(r.name,r.c,true)}<span class="n">${esc(r.name)}</span><span class="an">${r.wins} win${r.wins===1?'':'s'} <span>of ${r.played}</span></span></li>`).join('')}</ul>
+  <span class="hint">${a.games} game${a.games>1?'s':''} counted${a.ties?`, ${a.ties} tied (no win)`:''}${a.teamN?`. ${a.teamN} team game${a.teamN>1?'s':''} not counted`:''}.</span></div></div>`;
 }
 function renderHistory(){
   const H=S.history;
@@ -623,7 +652,7 @@ function renderNew(){
   <label class="switch" for="ngLowWins">Lowest score wins<input type="checkbox" class="check" id="ngLowWins" ${ng.lowWins?'checked':''}></label>
   <div id="ngModeBox" style="display:flex;flex-direction:column;gap:8px"></div>
   <span class="label">Game name</span><input class="field" id="ngName" maxlength="40" placeholder="Game night" value="${esc(ng.name)}">
-  <div class="section-head" style="margin:0"><span class="label">Who's playing <span id="ngCount" style="text-transform:none;letter-spacing:0;font-weight:600">· ${ng.sel.size} picked</span></span><button class="btn small ghost" data-act="ng-all" id="ngAll">${ng.sel.size?'Untick all':'Tick all'}</button></div>
+  <div class="section-head" style="margin:0"><span class="label">Who's playing <span id="ngCount" class="lsub">· ${ng.sel.size} picked</span></span><button class="btn small ghost" data-act="ng-all" id="ngAll">${ng.sel.size?'Untick all':'Tick all'}</button></div>
   ${ros.length?`<ul class="plist">${ros.map(p=>`<li><label class="pick" for="ng-${p.id}"><input type="checkbox" class="check" id="ng-${p.id}" data-ngp="${p.id}" ${ng.sel.has(p.id)?'checked':''}>${tileHTML(p.id,true)}<span class="pname">${esc(p.name)}</span></label></li>`).join('')}</ul>`:'<p class="hint" style="margin:0">No saved players yet. Add some below.</p>'}
   <form class="addrow" id="ngadd"><input class="field" id="ngNew" placeholder="Add a new player" maxlength="24" autocomplete="off" enterkeyhint="done"><button class="btn" type="submit">Add</button></form>
   <span class="hint">New players are saved for next time.</span>
@@ -679,7 +708,7 @@ function renderEditor(){
     const loose=g.teamsOn?looseOf(g):[];
     if(loose.length)h+=`<p class="warnbox">${esc(loose.map(id=>P(id).name).join(', '))} ${loose.length>1?'aren’t':'isn’t'} on a team, so they’re not scored. Set teams in Players.</p>`;
     const us=unitsOf(g);
-    h+=`<span class="label">Who went out? <span style="text-transform:none;letter-spacing:0;font-weight:600">· optional</span></span><div class="wins">${g.players.map(id=>`<button data-act="ed-out" data-id="${id}" aria-pressed="${ed.out===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>
+    h+=`<span class="label">Who went out? <span class="lsub">· optional</span></span><div class="wins">${g.players.map(id=>`<button data-act="ed-out" data-id="${id}" aria-pressed="${ed.out===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>
     <span class="hint">Points this round. Tap + to make it a minus. Blank counts as 0.</span><div class="erows">${us.map((id,i)=>`<div class="erow">${g.teamsOn?'':tileHTML(id,true)}<span class="n">${esc(nameOf(id))}${g.teamsOn?`<span class="sub">${esc(membersOf(g,id).map(m=>P(m).name).join(', ')||'No players yet')}</span>`:''}<span class="pv" id="pv-${id}"></span></span><button class="sign${ed.neg[id]?' minus':''}" data-act="ed-sign" data-id="${id}" aria-pressed="${!!ed.neg[id]}" aria-label="Minus for ${esc(nameOf(id))}">${ed.neg[id]?'−':'+'}</button><input class="field" id="v-${id}" data-val="${id}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${i<us.length-1?'next':'done'}" aria-label="${esc(nameOf(id))} points" placeholder="0" value="${ed.vals[id]??''}"></div>`).join('')}</div>`;
   }else{
     h+=`<span class="label">Who went out?</span><div class="wins">${g.players.map(id=>`<button data-act="ed-win" data-id="${id}" aria-pressed="${ed.winner===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>`;
@@ -893,6 +922,7 @@ document.addEventListener('click',e=>{
     case 'ed-out':ed.out=ed.out===id?null:id;document.querySelectorAll('[data-act=ed-out]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.id===ed.out));{const f=$('#sheet input[data-val]');if(f&&!f.value)f.focus({preventScroll:true})}break;
     case 'ng-mode':ng.mode=b.dataset.mode;renderNgMode();break;
     case 'theme':S.theme=b.dataset.themeV;renderAll();break;
+    case 'an-toggle':S.anClosed=!S.anClosed;save();renderHistory();break;
     case 'g-mode':g.mode=b.dataset.mode;renderAll();toast(g.mode==='rk'?'New rounds use Rummikub racks':'New rounds add up points');break;
     case 'ed-sign':ed.neg[id]=!ed.neg[id];b.classList.toggle('minus',ed.neg[id]);b.textContent=ed.neg[id]?'−':'+';b.setAttribute('aria-pressed',ed.neg[id]);updPv();{const inp=document.getElementById('v-'+id);if(inp)inp.focus({preventScroll:true})}break;
     case 'ed-win':ed.winner=id;delete ed.racks[id];renderEditor();edFocusFirst();break;
