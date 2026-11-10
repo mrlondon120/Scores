@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Game Night">
@@ -45,6 +45,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html,body{touch-action:manipulation}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 button,input,select{font:inherit;color:inherit}
@@ -126,7 +127,7 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
 .bar .in{max-width:720px;margin:0 auto}
 .bar .btn{width:100%;padding:16px;font-size:1.1rem;border-radius:14px;font-family:var(--display);font-weight:600}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 14px;display:flex;gap:14px;align-items:center;font-weight:600;max-width:calc(100% - 32px)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 14px;display:flex;gap:14px;align-items:center;font-weight:600;max-width:calc(100% - 32px)}
 .toast button{background:transparent;border:0;color:var(--accent-soft);font-weight:800;text-decoration:underline}
 
 .sheet-bg{position:fixed;inset:0;z-index:20;background:rgba(5,12,10,.5);display:flex;align-items:flex-end;justify-content:center}
@@ -299,7 +300,13 @@ function sample(){
   ])};
 }
 function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let saveWarned=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!saveWarned){saveWarned=true;setTimeout(()=>toast('Couldn’t save on this device: '+(e&&e.message||e),null,10000),0)}}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
+addEventListener('pagehide',()=>save());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
+/* Show unexpected errors on screen so problems on a phone can be reported. */
+addEventListener('error',e=>{try{toast('Error: '+(e.message||'unknown')+(e.lineno?' (line '+e.lineno+')':''),null,10000)}catch(_){}});
 let S=load()||sample();
 if(!S.tab)S.tab='scores';
 if(!S.history)S.history=[];
@@ -551,6 +558,9 @@ const presetLbl=s=>s<60?s+'s':`${Math.floor(s/60)}:${String(s%60).padStart(2,'0'
 const SND_FILES={tick1:'sounds/tick1.mp3',tick2:'sounds/tick2.mp3',tock1:'sounds/tock1.mp3',tock2:'sounds/tock2.mp3',beep:'sounds/beep.mp3',up:'sounds/timeup.mp3'};
 const SND={};let AC=null,noiseBuf=null,tickNext=true;
 function audio(){
+  try{return audioInit()}catch(e){return null}
+}
+function audioInit(){
   if(!AC){
     const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
     try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
@@ -586,8 +596,8 @@ async function wake(on){try{if(on){if('wakeLock' in navigator&&!TM.lock){TM.lock
 document.addEventListener('visibilitychange',()=>{if(TM.open&&document.visibilityState==='visible')wake(true)});
 
 function tmOpen(){
-  audio();Object.assign(TM,{open:true,state:'idle',left:tmTotal()*1000,last:null});
-  $('#tmr').hidden=false;wake(true);tmDraw();
+  Object.assign(TM,{open:true,state:'idle',left:tmTotal()*1000,last:null});
+  $('#tmr').hidden=false;tmDraw();audio();wake(true);
 }
 function tmClose(){TM.open=false;TM.state='idle';cancelAnimationFrame(TM.raf);stopUp();$('#tmr').hidden=true;wake(false)}
 function tmTap(){
@@ -629,7 +639,11 @@ function tmDraw(){
   document.querySelectorAll('.tmPause').forEach(pb=>{pb.disabled=!canPause;if(pb.dataset.ico!==ico){pb.dataset.ico=ico;pb.innerHTML=ICON[ico];pb.setAttribute('aria-label',ico==='play'?'Resume':'Pause')}});
   document.querySelectorAll('.tmMute').forEach(mb=>{if(mb.dataset.ico!==mi){mb.dataset.ico=mi;mb.innerHTML=ICON[mi];mb.setAttribute('aria-label',S.timer.mute?'Turn sound on':'Mute')}});
 }
-$('#tmTap').addEventListener('pointerdown',e=>{if(e.button>0)return;e.preventDefault();tmTap()});
+$('#tmTap').addEventListener('touchstart',e=>{e.preventDefault();tmTap()},{passive:false});
+$('#tmTap').addEventListener('mousedown',e=>{if(e.button===0)tmTap()});
+$('#tmr').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturestart',e=>{if(TM.open)e.preventDefault()});
+document.addEventListener('dblclick',e=>e.preventDefault());
 document.addEventListener('keydown',e=>{
   if(!TM.open)return;
   if(e.key===' '||e.key==='Enter'){if(e.target.closest&&e.target.closest('.tmb'))return;e.preventDefault();tmTap()}
@@ -656,7 +670,7 @@ function tmSetFromInputs(){
 
 /* ---------- helpers ---------- */
 let toastTimer,undoFn=null;
-function toast(msg,undo){const el=$('#toast');undoFn=undo||null;el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-act="toast-undo">Undo</button>':''}`;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.hidden=true;undoFn=null},undo?6000:2200)}
+function toast(msg,undo,ms){const el=$('#toast');undoFn=undo||null;el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-act="toast-undo">Undo</button>':''}`;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.hidden=true;undoFn=null},ms||(undo?6000:2200))}
 function twoTap(btn,fn){
   if(btn.dataset.armed){delete btn.dataset.armed;btn.textContent=btn.dataset.old;btn.classList.remove('armed');fn();return}
   const old=btn.textContent;btn.dataset.old=old;btn.dataset.armed='1';btn.textContent='Tap again to confirm';btn.classList.add('armed');
