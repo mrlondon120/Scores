@@ -299,22 +299,45 @@ function sample(){
     {id:uid(),type:'rk',winner:m,racks:{[a]:14,[d]:6,[j]:40},scores:{[m]:60,[a]:-14,[d]:-6,[j]:-40}}
   ])};
 }
+/* ---------- Saving ----------
+   Saved twice: localStorage (instant to read at start-up) and IndexedDB (commits right away, so it
+   survives the app being swiped closed). On start-up the newer of the two copies wins. */
 function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
+let idbP=null;
+function idb(){
+  if(!idbP)idbP=new Promise(res=>{try{const r=indexedDB.open('game-night',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}catch(e){res(null)}});
+  return idbP;
+}
+async function idbGet(){const db=await idb();if(!db)return null;return new Promise(res=>{try{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null)}catch(e){res(null)}})}
+async function idbPut(v){const db=await idb();if(!db)return false;return new Promise(res=>{try{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,KEY);tx.oncomplete=()=>res(true);tx.onerror=tx.onabort=()=>res(false)}catch(e){res(false)}})}
 let saveWarned=false;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!saveWarned){saveWarned=true;setTimeout(()=>toast('Couldn’t save on this device: '+(e&&e.message||e),null,10000),0)}}}
+function save(){
+  S.saved=Date.now();let str,lsOk=true;
+  try{str=JSON.stringify(S)}catch(e){return}
+  try{localStorage.setItem(KEY,str)}catch(e){lsOk=false}
+  idbPut(str).then(ok=>{if(!ok&&!lsOk&&!saveWarned){saveWarned=true;toast('Couldn’t save on this device. Scores will be lost when the app closes.',null,10000)}});
+}
+function normalize(){
+  if(!S.tab)S.tab='scores';
+  if(!S.history)S.history=[];
+  if(!S.timer)S.timer={sec:60,warn:10,mute:false};
+  /* Older saves scored players even in team mode: fold those rounds into team scores. */
+  const g=S.game;if(!g.teamsOn)return;const tids=new Set(g.teams.map(t=>t.id));
+  g.rounds.forEach(r=>{if(Object.keys(r.scores).every(k=>tids.has(k)))return;const sc={};
+    for(const k in r.scores){const tid=tids.has(k)?k:g.teamOf[k];if(tid&&tids.has(tid))sc[tid]=(sc[tid]||0)+r.scores[k]}
+    r.scores=sc;r.type='std';delete r.winner;delete r.racks});
+}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
 addEventListener('pagehide',()=>save());
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
 /* Show unexpected errors on screen so problems on a phone can be reported. */
 addEventListener('error',e=>{try{toast('Error: '+(e.message||'unknown')+(e.lineno?' (line '+e.lineno+')':''),null,10000)}catch(_){}});
 let S=load()||sample();
-if(!S.tab)S.tab='scores';
-if(!S.history)S.history=[];
-/* Older saves scored players even in team mode: fold those rounds into team scores. */
-(()=>{const g=S.game;if(!g.teamsOn)return;const tids=new Set(g.teams.map(t=>t.id));
-  g.rounds.forEach(r=>{if(Object.keys(r.scores).every(k=>tids.has(k)))return;const sc={};
-    for(const k in r.scores){const tid=tids.has(k)?k:g.teamOf[k];if(tid&&tids.has(tid))sc[tid]=(sc[tid]||0)+r.scores[k]}
-    r.scores=sc;r.type='std';delete r.winner;delete r.racks})})();
+normalize();
+const loadedAt=S.saved||0;
+/* If IndexedDB holds a newer copy (e.g. localStorage lost its last writes), use it. */
+idbGet().then(r=>{if(!r)return;let d;try{d=JSON.parse(r)}catch(e){return}
+  if(d&&d.game&&(d.saved||0)>loadedAt){S=d;normalize();if(!TM.open){closeEditor();closeNew()}renderAll()}});
 
 const P=id=>S.roster.find(p=>p.id===id)||{name:'?',c:3};
 const tileFor=(name,c,sm)=>`<span class="tile${sm?' sm':''}" style="--pc:var(--t${c%4})">${esc((String(name).trim()[0]||'?').toUpperCase())}</span>`;
@@ -334,7 +357,7 @@ const rankList=vals=>{let r=0,prev=null;return vals.map((v,i)=>{if(v!==prev){r=i
 const fmtDate=ts=>{const d=new Date(ts),o={weekday:'short',month:'short',day:'numeric'};if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';return d.toLocaleDateString(undefined,o)};
 const openHist=new Set();
 
-function renderAll(){renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer();save()}
+function renderAll(){save();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
 function renderHead(){
   if(document.activeElement!==$('#gname'))$('#gname').value=S.game.name;
   $('#exbanner').hidden=!S.example;
@@ -548,7 +571,6 @@ function saveRound(){
 }
 
 /* ---------- Turn timer ---------- */
-if(!S.timer)S.timer={sec:60,warn:10,mute:false};
 const PRESETS=[10,15,30,45,60,90,120,180,300];
 const clock=s=>s<100?String(s):`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
 const presetLbl=s=>s<60?s+'s':`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
