@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Game Night">
-<meta name="theme-color" content="#0e6b5c" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#2fae94" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f8f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1513" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -243,7 +243,6 @@ label.pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:po
 
 /* ---------- Score sheet world ---------- */
 h2,.row .total,.wname,#tmNum,.tmmsg,.bar .btn,.btn.go,#gname,.mini .v,.mini .an,tfoot td,tr.sum td,.erow input,.tmset input{font-stretch:84%}
-body::before{background:var(--accent)}
 header{background:var(--accent);color:var(--accent-ink);margin-top:-16px;margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
 #gname{color:inherit;font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
 #gname:hover,#gname:focus{border-bottom-color:var(--band-line)}
@@ -486,7 +485,11 @@ const openHist=new Set();
 const THEME_META=[...document.querySelectorAll('meta[name=theme-color]')].map(m=>[m,m.getAttribute('content')]);
 function applyTheme(){const th=S.theme||'auto',root=document.documentElement;
   if(th==='auto')delete root.dataset.theme;else root.dataset.theme=th;
-  THEME_META.forEach(([m,c])=>m.setAttribute('content',th==='auto'?c:(th==='dark'?'#2fae94':'#0e6b5c')))}
+  barColor()}
+/* The phone's status bar matches the page: the pad ground, or the timer's colour while the timer is open. */
+const TM_BG={idle:'#0e1614',run:'#0b2b25',warn:'#3a2105',up:'#4a100d',paused:'#161d1b'};
+function barColor(tmState){const th=S.theme||'auto';
+  THEME_META.forEach(([m,c])=>m.setAttribute('content',tmState?TM_BG[tmState]||TM_BG.idle:th==='auto'?c:(th==='dark'?'#0d1513':'#f7f8f7')))}
 (()=>{const h=document.querySelector('header');if(!h)return;const set=()=>document.documentElement.style.setProperty('--head-h',h.offsetHeight+'px');set();
   try{new ResizeObserver(set).observe(h)}catch(e){addEventListener('resize',set)}})();
 function renderAll(){normalize();save();applyTheme();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
@@ -802,7 +805,7 @@ function tmOpen(){
   Object.assign(TM,{open:true,state:'idle',left:tmTotal()*1000,last:null});
   $('#tmr').hidden=false;tmDraw();audio();wake(true);
 }
-function tmClose(){TM.open=false;TM.state='idle';cancelAnimationFrame(TM.raf);stopUp();$('#tmr').hidden=true;wake(false)}
+function tmClose(){TM.open=false;TM.state='idle';cancelAnimationFrame(TM.raf);stopUp();$('#tmr').hidden=true;wake(false);barColor()}
 function tmTap(){
   audio();
   if(TM.state==='paused'){TM.end=performance.now()+TM.left;TM.state='run';tmLoop();return}
@@ -834,7 +837,7 @@ const ICON={pause:'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="
 function tmDraw(){
   if(!TM.open)return;
   const s=Math.ceil(TM.left/1000),tot=tmTotal(),warn=TM.state==='run'&&s<=S.timer.warn;
-  $('#tmr').dataset.state=warn?'warn':TM.state;
+  {const st=warn?'warn':TM.state;if($('#tmr').dataset.state!==st)barColor(st);$('#tmr').dataset.state=st}
   const num=$('#tmNum');num.textContent=clock(s);num.classList.toggle('long',s>=100);
   $('#tmArc').style.strokeDashoffset=100-100*Math.min(1,TM.left/(tot*1000));
   {const m=warn?`Hurry · ${s} second${s===1?'':'s'} left`:{idle:'Tap to start',paused:'Paused · tap to resume',up:'Time’s up! Tap to go again',run:''}[TM.state];const el=$('#tmMsg');if(el.textContent!==m)el.textContent=m}

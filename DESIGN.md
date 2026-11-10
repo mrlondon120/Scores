@@ -401,7 +401,7 @@ A hand-drawn loop around the leader's total, around the heading of the game-over
 A Sunk track (10px radius, 4px padding and gap) of transparent Muted options. The selected option becomes a flat Sheet White tab with teal text and a 1.5px inset teal outline (no shadow). Two options by default, three for the Display setting.
 
 ### Display setting (Auto / Light / Dark)
-A ruled section in Players headed "Display" with a three-way segmented control and a hint that restates the choice ("Follows your phone's light or dark setting.", "Always dark, whatever the phone is set to.", "Always light, whatever the phone is set to."). Auto removes the `data-theme` attribute so the dark tokens apply through `prefers-color-scheme`; Light and Dark set `data-theme` on the root, which forces the matching token set. The browser theme colour follows: Printed Teal on light, the night teal on dark.
+A ruled section in Players headed "Display" with a three-way segmented control and a hint that restates the choice ("Follows your phone's light or dark setting.", "Always dark, whatever the phone is set to.", "Always light, whatever the phone is set to."). Auto removes the `data-theme` attribute so the dark tokens apply through `prefers-color-scheme`; Light and Dark set `data-theme` on the root, which forces the matching token set. The phone's status bar follows the pad ground (#f7f8f7 light, #0d1513 dark), and takes the timer's background while the timer is open, so there is never a coloured strip above the page.
 
 ### Inputs / Fields
 - **Style:** Sheet White ground, 1px Field Rule border, 8px radius, 10px 12px padding.
