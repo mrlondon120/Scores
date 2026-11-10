@@ -616,13 +616,13 @@ function renderRounds(){
   if(!g.players.length){$('#v-rounds').innerHTML=`<div class="empty"><p>No one is playing yet.</p><button class="btn primary" data-act="tab" data-tab="players">Add players</button></div>`;return}
   const cols=unitsOf(g).slice().sort((a,b)=>cmp(t[a],t[b])),has=g.rounds.length;
   let h=`<div class="section-head"><h2>Round by round</h2>${has?'<button class="btn small" data-act="undo">Delete last round</button>':''}</div>
-  <p class="meta">${has?`Totals are at the top. Tap a round to edit or delete it.${g.rounds.some(r=>r.winner||r.out)?' Green marks who went out.':''}`:'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th title="${esc(nameOf(id))}"><span class="thn">${esc(nameOf(id))}</span></th>`).join('')}</tr>${has?`<tr class="sum"><td>Total</td>${cols.map(id=>`<td class="${numCls(t[id])}">${fmt(t[id])}</td>`).join('')}</tr>`:''}</thead><tbody>`;
+  <p class="meta">${has?`Totals are at the top. Tap a round to edit or delete it.${g.rounds.some(r=>r.winner||r.out)?' Teal marks who went out.':''}`:'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th title="${esc(nameOf(id))}"><span class="thn">${esc(nameOf(id))}</span></th>`).join('')}</tr>${has?`<tr class="sum"><td>Total</td>${cols.map(id=>`<td class="${numCls(t[id])}">${fmt(t[id])}</td>`).join('')}</tr>`:''}</thead><tbody>`;
   if(!has)h+=`<tr class="static"><td>Start</td>${cols.map(()=>'<td>0</td>').join('')}</tr>`;
   g.rounds.forEach((r,i)=>{
     const went=r.winner||r.out,wentCol=went?(g.teamsOn?g.teamOf[went]:went):null;
     h+=`<tr data-act="edit-round" data-id="${r.id}"><td>${i+1}${r.type!==g.mode?`<span class="kind">${r.type==='rk'?'Rummikub':'Points'}</span>`:''}</td>${cols.map(id=>{const v=r.scores[id];if(v===undefined)return '<td>–</td>';return `<td class="${wentCol===id?'out':numCls(v)}">${fmtS(v)}${wentCol===id?'<span class="sr-only"> (went out)</span>':''}</td>`}).join('')}</tr>`;
   });
-  h+=`</tbody></table></div>`;
+  h+=`</tbody></table></div>`+(has?'<div class="endrow"><button class="btn" data-act="end-game">End game and show the winner</button></div>':'');
   $('#v-rounds').innerHTML=h;
 }
 
