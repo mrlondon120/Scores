@@ -20,16 +20,16 @@
 <style>
 /* Layout: one-column game-table app — tabs (Scores / Rounds / Players), fixed bottom "Score a round" bar, bottom-sheet round editor. Player chips are Rummikub tiles in the four tile colors. */
 :root{
-  --bg:#e9efed; --surface:#ffffff; --sunk:#f3f6f5; --ink:#15201d; --muted:#596864; --line:#d2dcd9;
+  --bg:#e9efed; --surface:#ffffff; --sunk:#f3f6f5; --ink:#15201d; --muted:#596864; --line:#d2dcd9; --field-line:#74867f;
   --accent:#0d6a5a; --accent-ink:#ffffff; --accent-soft:#d7ebe6;
   --tile:#fbf8f0; --tile-edge:#ddd6c5;
-  --t0:#c62f2f; --t1:#1f5fbf; --t2:#c27006; --t3:#1d1d1d;
+  --t0:#c62f2f; --t1:#1f5fbf; --t2:#a35c00; --t3:#1d1d1d;
   --good:#1b7a43; --bad:#b3261e; --warn-bg:#fdf3dc; --warn-ink:#6b4a00;
   --display:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;
   --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f;
+  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f; --field-line:#61756c;
   --accent:#3db49a; --accent-ink:#06201a; --accent-soft:#163a32;
   --tile:#222d29; --tile-edge:#34433d;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
@@ -37,7 +37,7 @@
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f;
+  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f; --field-line:#61756c;
   --accent:#3db49a; --accent-ink:#06201a; --accent-soft:#163a32;
   --tile:#222d29; --tile-edge:#34433d;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
@@ -77,6 +77,8 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 
 .meta{color:var(--muted);font-size:.9rem;margin:2px 0 12px}
 .tile{--pc:var(--t3);flex:none;width:2.2rem;height:2.7rem;border-radius:7px;background:var(--tile);border:1px solid var(--tile-edge);box-shadow:0 3px 0 var(--tile-edge);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--pc)}
+.tile.two{font-size:.95rem;letter-spacing:-.02em}
+.tile.sm.two{font-size:.74rem}
 .tile.sm{width:1.7rem;height:2.1rem;font-size:.9rem;border-radius:6px;box-shadow:0 2px 0 var(--tile-edge)}
 
 ol.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
@@ -103,16 +105,19 @@ th{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--mu
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
 tbody tr{cursor:pointer}
 tbody tr:hover td{background:var(--sunk)}
-tfoot td{font-family:var(--display);font-weight:700;font-size:1.05rem;border-bottom:0}
+tfoot td,tr.sum td{font-family:var(--display);font-weight:700;font-size:1.05rem}
+tr.sum td{background:var(--sunk);border-bottom:2px solid var(--line)}
+tr.sum td:first-child{background:var(--sunk)}
+.thn{display:inline-block;max-width:7.5rem;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
 td.out{color:var(--good);font-weight:700}
-.kind{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 6px;margin-left:6px}
+.kind{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 6px;margin-left:6px}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;flex-wrap:wrap}
 h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
 .addrow{display:flex;gap:8px}
 .addrow input{flex:1;min-width:0}
-input.field,select.field{border:1px solid var(--line);background:var(--sunk);border-radius:10px;padding:10px 12px;min-width:0}
+input.field,select.field{border:1px solid var(--field-line);background:var(--sunk);border-radius:10px;padding:10px 12px;min-width:0}
 .plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .plist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
 .plist li:first-child{border-top:0}
@@ -184,7 +189,12 @@ tbody tr.static td{color:var(--muted)}
 #winbg{align-items:center;padding:16px}
 #win{border-radius:18px;max-width:440px;padding-top:24px;padding-bottom:18px}
 .winner{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
-.winner .tile{width:3.6rem;height:4.4rem;font-size:2rem;border-radius:10px;box-shadow:0 4px 0 var(--tile-edge);margin-bottom:6px}
+.wtiles{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
+.winner .tile{width:3.6rem;height:4.4rem;font-size:2rem;border-radius:10px;box-shadow:0 4px 0 var(--tile-edge)}
+.wt{display:block;animation:wdrop .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i)*90ms)}
+.winner .label,.wname,.wscore{animation:wrise .5s cubic-bezier(.16,1,.3,1) .25s both}
+@keyframes wdrop{0%{transform:translateY(-46px) rotate(-12deg);opacity:0}60%{opacity:1}100%{transform:none}}
+@keyframes wrise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
 .wname{font-family:var(--display);font-weight:700;font-size:2.1rem;line-height:1.1;text-wrap:balance;overflow-wrap:anywhere}
 .wscore{color:var(--muted);font-weight:700}
 .mini li.first .n,.mini li.first .v{color:var(--good)}
@@ -221,6 +231,7 @@ tbody tr.static td{color:var(--muted)}
 @keyframes tmhit{0%{transform:scale(.92)}100%{transform:scale(1)}}
 .tmr[data-state="up"] #tmNum{animation:tmpulse 1s ease-in-out infinite}
 @keyframes tmpulse{50%{opacity:.45}}
+label.hit{display:grid;place-items:center;width:44px;height:44px;margin:-6px -6px -6px -10px;flex:none;cursor:pointer}
 label.pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer;font-weight:700}
 .mini .sub{display:block;font-size:.82rem;font-weight:600;color:var(--muted)}
 .erow .sub{display:block;font-size:.82rem;font-weight:600;color:var(--muted)}
@@ -269,12 +280,12 @@ label.pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:po
   </div>
   <div class="tmtap" id="tmTap">
     <div class="tmdial"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="46"/><circle class="arc" id="tmArc" cx="50" cy="50" r="46" pathLength="100"/></svg><span id="tmNum" aria-live="off"></span></div>
-    <div class="tmmsg" id="tmMsg"></div>
+    <div class="tmmsg" id="tmMsg" role="status"></div>
   </div>
-  <div class="tmctl">
-    <button class="tmb" data-act="tm-close" aria-label="Stop timer"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
-    <button class="tmb tmPause" data-act="tm-pause" aria-label="Pause"></button>
-    <button class="tmb tmMute" data-act="tm-mute" aria-label="Mute"></button>
+  <div class="tmctl" aria-hidden="true">
+    <button class="tmb" data-act="tm-close" tabindex="-1"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
+    <button class="tmb tmPause" data-act="tm-pause" tabindex="-1"></button>
+    <button class="tmb tmMute" data-act="tm-mute" tabindex="-1"></button>
   </div>
 </div>
 <div id="ngbg" class="sheet-bg" hidden><div class="sheet" id="ng" role="dialog" aria-modal="true" aria-label="New game"></div></div>
@@ -285,8 +296,8 @@ const KEY='game-night-scores-v1';
 const $=s=>document.querySelector(s);
 const uid=()=>Math.random().toString(36).slice(2,10);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmt=n=>(n<0?'−':'')+Math.abs(n);
-const fmtS=n=>n>0?'+'+n:fmt(n);
+const fmt=n=>(n<0?'−':'')+Math.abs(n).toLocaleString();
+const fmtS=n=>n>0?'+'+n.toLocaleString():fmt(n);
 const JOKER=30;
 
 function newGame(players,name,rounds,prev){
@@ -353,7 +364,14 @@ idbGet().then(r=>{if(!r)return;let d;try{d=JSON.parse(r)}catch(e){return}
 
 const P=id=>S.roster.find(p=>p.id===id)||{name:'?',c:3};
 const tileFor=(name,c,sm)=>`<span class="tile${sm?' sm':''}" style="--pc:var(--t${c%4})">${esc((String(name).trim()[0]||'?').toUpperCase())}</span>`;
-const tileHTML=(id,sm)=>{const p=P(id);return tileFor(p.name,p.c,sm)};
+const ini=n=>(String(n).trim()[0]||'?').toUpperCase();
+/* Tile letters: one initial, or two letters when another saved player shares the initial (An / At). */
+function tileLabels(){const out={},used=new Set(),cnt={};S.roster.forEach(p=>{const i=ini(p.name);cnt[i]=(cnt[i]||0)+1});
+  S.roster.forEach(p=>{const n=String(p.name).trim(),i=ini(n);if(cnt[i]<2){out[p.id]=i;return}
+    let lab=null;for(let k=1;k<n.length&&!lab;k++){const c=n[k].toLowerCase();if(!/[a-z\u00c0-\u024f]/i.test(c))continue;const cand=i+c;if(!used.has(cand))lab=cand}
+    lab=lab||i+String(used.size%10);used.add(lab);out[p.id]=lab});return out}
+const tileHTML=(id,sm)=>{const p=P(id),lab=tileLabels()[id]||ini(p.name);
+  return `<span class="tile${lab.length>1?' two':''}${sm?' sm':''}" style="--pc:var(--t${p.c%4})">${esc(lab)}</span>`};
 const hasScores=id=>S.game.rounds.some(r=>id in r.scores);
 const unitsOf=g=>g.teamsOn?g.teams.map(t=>t.id):g.players;
 const nameOf=id=>{const tm=S.game.teams.find(x=>x.id===id);return tm?tm.name:P(id).name};
@@ -409,7 +427,7 @@ function miniList(items,withTiles){
 }
 function showWinner(h){
   const st=histStandings(h),w=st.winnerItems[0],tie=st.winners.length>1;
-  let html=`<div class="winner">${st.teams||!w?'':tileFor(w.name,w.c)}<span class="label">${tie?'It’s a tie':'Winner'}</span>
+  let html=`<div class="winner"><div class="wtiles">${st.teams||!w?'':st.winnerItems.map((x,i)=>`<span class="wt" style="--i:${i}">${tileFor(x.name,x.c)}</span>`).join('')}</div><span class="label">${tie?'It’s a tie':'Winner'}</span>
     <div class="wname">${esc(st.winners.join(' & '))}</div>
     <div class="wscore">${fmt(st.top)} points${h.lowWins?' · lowest score wins':''}</div></div>`;
   const rl=`${h.rounds.length} round${h.rounds.length>1?'s':''}`;
@@ -420,7 +438,7 @@ function showWinner(h){
     <button class="btn primary go" data-act="win-close">Play again · same ${st.teamScored?'teams':'players'}</button>
     <div class="actions"><button class="btn grow" data-act="win-history">View history</button><button class="btn grow" data-act="win-again">New game</button></div>
     ${lastEnd&&lastEnd.id===h.id?'<button class="btn link" data-act="win-undo">Not done yet? Undo and keep playing</button>':''}`;
-  $('#win').innerHTML=html;$('#winbg').hidden=false;
+  $('#win').innerHTML=html;$('#winbg').hidden=false;fanfare();
 }
 function allNights(H){
   const st={},solo=H.filter(g=>!g.teamsOn&&g.players.length);let streak=null,teamN=H.length-solo.length,ties=0;
@@ -488,13 +506,13 @@ function renderRounds(){
   if(!g.players.length){$('#v-rounds').innerHTML=`<div class="empty"><p>No one is playing yet.</p><button class="btn primary" data-act="tab" data-tab="players">Add players</button></div>`;return}
   const cols=unitsOf(g).slice().sort((a,b)=>cmp(t[a],t[b])),has=g.rounds.length;
   let h=`<div class="section-head"><h2>Round by round</h2>${has?'<button class="btn small" data-act="undo">Remove last round</button>':''}</div>
-  <p class="meta">${has?`Tap a round to edit or delete it.${g.rounds.some(r=>r.winner||r.out)?' Green marks who went out.':''}`:'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th>${esc(nameOf(id))}</th>`).join('')}</tr></thead><tbody>`;
+  <p class="meta">${has?`Totals are at the top. Tap a round to edit or delete it.${g.rounds.some(r=>r.winner||r.out)?' Green marks who went out.':''}`:'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th title="${esc(nameOf(id))}"><span class="thn">${esc(nameOf(id))}</span></th>`).join('')}</tr>${has?`<tr class="sum"><td>Total</td>${cols.map(id=>`<td class="${numCls(t[id])}">${fmt(t[id])}</td>`).join('')}</tr>`:''}</thead><tbody>`;
   if(!has)h+=`<tr class="static"><td>Start</td>${cols.map(()=>'<td>0</td>').join('')}</tr>`;
   g.rounds.forEach((r,i)=>{
     const went=r.winner||r.out,wentCol=went?(g.teamsOn?g.teamOf[went]:went):null;
     h+=`<tr data-act="edit-round" data-id="${r.id}"><td>${i+1}${r.type!==g.mode?`<span class="kind">${r.type==='rk'?'Rummikub':'Points'}</span>`:''}</td>${cols.map(id=>{const v=r.scores[id];if(v===undefined)return '<td>–</td>';return `<td class="${wentCol===id?'out':numCls(v)}">${fmtS(v)}${wentCol===id?'<span class="sr-only"> (went out)</span>':''}</td>`}).join('')}</tr>`;
   });
-  h+=`</tbody><tfoot><tr><td>Total</td>${cols.map(id=>`<td class="${numCls(t[id])}">${fmt(t[id])}</td>`).join('')}</tr></tfoot></table></div>`;
+  h+=`</tbody></table></div>`;
   $('#v-rounds').innerHTML=h;
 }
 
@@ -509,7 +527,7 @@ function renderPlayers(){
   h+=`<div class="card"><div class="section-head" style="margin:0"><h2>Saved players</h2><span class="hint">${g.players.length} playing</span></div>`;
   if(!S.roster.length)h+=`<p class="hint" style="margin:0">No saved players yet.</p>`;
   h+=`<ul class="plist">${S.roster.slice().sort(byName).map(p=>{const locked=hasScores(p.id);const on=g.players.includes(p.id);
-    return `<li><input type="checkbox" class="check" id="play-${p.id}" data-play="${p.id}" ${on?'checked':''} ${locked?'disabled':''} aria-label="${esc(p.name)} is playing">${tileHTML(p.id,true)}
+    return `<li><label class="hit" for="play-${p.id}"><input type="checkbox" class="check" id="play-${p.id}" data-play="${p.id}" ${on?'checked':''} ${locked?'disabled':''} aria-label="${esc(p.name)} is playing"></label>${tileHTML(p.id,true)}
     <span class="pname"><input class="field" id="name-${p.id}" data-rename="${p.id}" value="${esc(p.name)}" maxlength="24" aria-label="Name">${locked?'<span class="hint">Has scores this game</span>':''}</span>
     <button class="btn small ghost danger" data-act="del-player" data-id="${p.id}" ${locked?'disabled':''} aria-label="Delete ${esc(p.name)}">Delete</button></li>`}).join('')}</ul>
     <span class="hint">Check who's playing this game. Unchecked players stay saved.</span></div>`;
@@ -639,6 +657,13 @@ function audioInit(){
   if(AC.state!=='running')AC.resume().catch(()=>{});
   return AC;
 }
+function fanfare(){
+  if(S.timer.mute)return;
+  const ac=audio();if(!ac)return;try{ac.resume&&ac.resume()}catch(e){}
+  const t0=ac.currentTime+.03;[[523.25,0],[659.25,.11],[783.99,.22],[1046.5,.36]].forEach(([f,d],i)=>{
+    const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;o.connect(g);g.connect(ac.destination);
+    const s=t0+d,len=i===3?.55:.16;g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.22,s+.012);g.gain.exponentialRampToValueAtTime(.0001,s+len);o.start(s);o.stop(s+len+.02)});
+}
 function play(k){
   if(S.timer.mute)return null;const ac=audio();if(!ac)return null;const t=ac.currentTime+.005;
   let name=k,tick=false;
@@ -703,7 +728,7 @@ function tmDraw(){
   $('#tmr').dataset.state=warn?'warn':TM.state;
   const num=$('#tmNum');num.textContent=clock(s);num.classList.toggle('long',s>=100);
   $('#tmArc').style.strokeDashoffset=100-100*Math.min(1,TM.left/(tot*1000));
-  $('#tmMsg').textContent={idle:'Tap to start',paused:'Paused · tap to resume',up:'Time’s up! Tap to go again',run:''}[TM.state];
+  {const m=warn?`Hurry · ${s} second${s===1?'':'s'} left`:{idle:'Tap to start',paused:'Paused · tap to resume',up:'Time’s up! Tap to go again',run:''}[TM.state];const el=$('#tmMsg');if(el.textContent!==m)el.textContent=m}
   const canPause=TM.state==='run'||TM.state==='paused',ico=TM.state==='paused'?'play':'pause',mi=S.timer.mute?'mute':'snd';
   document.querySelectorAll('.tmPause').forEach(pb=>{pb.disabled=!canPause;if(pb.dataset.ico!==ico){pb.dataset.ico=ico;pb.innerHTML=ICON[ico];pb.setAttribute('aria-label',ico==='play'?'Resume':'Pause')}});
   document.querySelectorAll('.tmMute').forEach(mb=>{if(mb.dataset.ico!==mi){mb.dataset.ico=mi;mb.innerHTML=ICON[mi];mb.setAttribute('aria-label',S.timer.mute?'Turn sound on':'Mute')}});
@@ -830,6 +855,8 @@ document.addEventListener('keydown',e=>{
   e.preventDefault();const all=[...document.querySelectorAll('#sheet input[data-val],#sheet input[data-rack]')];const i=all.indexOf(t);
   if(i>-1&&i<all.length-1){all[i+1].focus();all[i+1].select&&all[i+1].select()}else{t.blur();saveRound()}
 });
+document.addEventListener('keydown',e=>{const tb=e.target.closest&&e.target.closest('nav.tabs [role=tab]');if(!tb||(e.key!=='ArrowRight'&&e.key!=='ArrowLeft'))return;
+  const all=[...document.querySelectorAll('nav.tabs [role=tab]')],i=all.indexOf(tb),n=all[(i+(e.key==='ArrowRight'?1:all.length-1))%all.length];e.preventDefault();S.tab=n.dataset.tab;renderAll();n.focus()});
 document.addEventListener('keydown',e=>{if(e.key!=='Escape'||TM.open)return;if(ng)closeNew();if(ed)closeEditor();$('#winbg').hidden=true});
 renderAll();
 </script>
