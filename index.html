@@ -289,7 +289,7 @@ function newGame(players,name,rounds,prev){
   return {name:name||'Game night',started:Date.now(),players:players.slice(),
     teamsOn:prev?prev.teamsOn:false,lowWins:prev?!!prev.lowWins:false,
     teams:prev?prev.teams:[{id:uid(),name:'Team A'},{id:uid(),name:'Team B'}],
-    teamOf:prev?prev.teamOf:{},rounds:rounds||[]};
+    teamOf:prev?prev.teamOf:{},mode:prev?(prev.mode==='rk'&&!prev.teamsOn?'rk':'std'):undefined,rounds:rounds||[]};
 }
 function sample(){
   const p=['Ana','Marcus','Dee','Jay'].map((n,i)=>({id:uid(),name:n,c:i}));
@@ -326,8 +326,11 @@ function normalize(){
   if(!S.tab)S.tab='scores';
   if(!S.history)S.history=[];
   if(!S.timer)S.timer={sec:60,warn:10,mute:false};
+  const g=S.game;
+  if(g.mode!=='std'&&g.mode!=='rk'){const last=g.rounds[g.rounds.length-1];g.mode=(last&&last.type)||S.lastType||'std'}
+  if(g.teamsOn)g.mode='std';
   /* Older saves scored players even in team mode: fold those rounds into team scores. */
-  const g=S.game;if(!g.teamsOn)return;const tids=new Set(g.teams.map(t=>t.id));
+  if(!g.teamsOn)return;const tids=new Set(g.teams.map(t=>t.id));
   g.rounds.forEach(r=>{if(Object.keys(r.scores).every(k=>tids.has(k)))return;const sc={};
     for(const k in r.scores){const tid=tids.has(k)?k:g.teamOf[k];if(tid&&tids.has(tid))sc[tid]=(sc[tid]||0)+r.scores[k]}
     r.scores=sc;r.type='std';delete r.winner;delete r.racks});
@@ -379,7 +382,7 @@ function archive(g){
   S.history.unshift({id:uid(),name:g.name,started:g.started||Date.now(),ended:Date.now(),teamsOn:!!g.teamsOn,teamScored:!!g.teamsOn,lowWins:!!g.lowWins,
     teams:g.teamsOn?g.teams.filter(tm=>scored.has(tm.id)||membersOf(g,tm.id).length).map(tm=>({id:tm.id,name:tm.name,members:membersOf(g,tm.id).map(id=>P(id).name),total:t[tm.id]})):[],
     players:g.players.map(id=>({id,name:P(id).name,c:P(id).c,total:g.teamsOn?null:t[id]})),
-    rounds:g.rounds.map(r=>({type:r.type,winner:r.winner||null,scores:{...r.scores}}))});
+    rounds:g.rounds.map(r=>({type:r.type,winner:r.winner||null,out:r.out||null,scores:{...r.scores}}))});
   return true;
 }
 function histStandings(h){
@@ -464,10 +467,11 @@ function renderRounds(){
   if(!g.players.length){$('#v-rounds').innerHTML=`<div class="empty"><p>No one is playing yet.</p><button class="btn primary" data-act="tab" data-tab="players">Add players</button></div>`;return}
   const cols=unitsOf(g).slice().sort((a,b)=>cmp(t[a],t[b])),has=g.rounds.length;
   let h=`<div class="section-head"><h2>Round by round</h2>${has?'<button class="btn small" data-act="undo">Remove last round</button>':''}</div>
-  <p class="meta">${has?'Tap a round to edit or delete it. Leader is on the left.':'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th>${esc(nameOf(id))}</th>`).join('')}</tr></thead><tbody>`;
+  <p class="meta">${has?`Tap a round to edit or delete it.${g.rounds.some(r=>r.winner||r.out)?' Green marks who went out.':''}`:'Everyone starts at 0. Each round you score shows up here.'}</p><div class="tablewrap"><table><thead><tr><th>Round</th>${cols.map(id=>`<th>${esc(nameOf(id))}</th>`).join('')}</tr></thead><tbody>`;
   if(!has)h+=`<tr class="static"><td>Start</td>${cols.map(()=>'<td>0</td>').join('')}</tr>`;
   g.rounds.forEach((r,i)=>{
-    h+=`<tr data-act="edit-round" data-id="${r.id}"><td>${i+1}${r.type==='rk'?'<span class="kind">Rummikub</span>':''}</td>${cols.map(id=>{const v=r.scores[id];if(v===undefined)return '<td>–</td>';return `<td class="${r.winner===id?'out':numCls(v)}">${fmtS(v)}</td>`}).join('')}</tr>`;
+    const went=r.winner||r.out,wentCol=went?(g.teamsOn?g.teamOf[went]:went):null;
+    h+=`<tr data-act="edit-round" data-id="${r.id}"><td>${i+1}${r.type!==g.mode?`<span class="kind">${r.type==='rk'?'Rummikub':'Points'}</span>`:''}</td>${cols.map(id=>{const v=r.scores[id];if(v===undefined)return '<td>–</td>';return `<td class="${wentCol===id?'out':numCls(v)}">${fmtS(v)}${wentCol===id?'<span class="sr-only"> (went out)</span>':''}</td>`}).join('')}</tr>`;
   });
   h+=`</tbody><tfoot><tr><td>Total</td>${cols.map(id=>`<td class="${numCls(t[id])}">${fmt(t[id])}</td>`).join('')}</tr></tfoot></table></div>`;
   $('#v-rounds').innerHTML=h;
@@ -479,6 +483,7 @@ function renderPlayers(){
   if(g.teamsOn){
     h+=`<div class="card"><h2>Teams this game</h2>${g.players.length?`<ul class="plist">${g.players.map(id=>`<li>${tileHTML(id,true)}<span class="pname">${esc(P(id).name)}</span><select class="field" id="team-${id}" data-team="${id}"><option value="">No team</option>${g.teams.map(tm=>`<option value="${tm.id}" ${g.teamOf[id]===tm.id?'selected':''}>${esc(tm.name)}</option>`).join('')}</select></li>`).join('')}</ul>`:'<p class="hint" style="margin:0">No one is playing yet.</p>'}<span class="hint">To change the teams themselves or turn teams off, start a new game.</span></div>`;
   }
+  if(!g.teamsOn)h+=`<div class="card"><h2>Scoring</h2>${modeSeg('g-mode',g.mode)}<span class="hint">${modeHint(g.mode)} Changing it only affects new rounds.</span></div>`;
   h+=`<div class="card"><h2>Add a player</h2><form class="addrow" id="addform"><input class="field" id="newname" placeholder="Name" maxlength="24" autocomplete="off" enterkeyhint="done"><button class="btn primary" type="submit">Add</button></form><span class="hint">Names are saved on this device for next game night.</span></div>`;
   h+=`<div class="card"><div class="section-head" style="margin:0"><h2>Saved players</h2><span class="hint">${g.players.length} playing</span></div>`;
   if(!S.roster.length)h+=`<p class="hint" style="margin:0">No saved players yet.</p>`;
@@ -492,7 +497,7 @@ function renderPlayers(){
 
 /* ---------- New game picker ---------- */
 let ng=null;
-function openNew(){const g=S.game;ng={name:g.name,sel:new Set(g.players),lowWins:!!g.lowWins,teamsOn:!!g.teamsOn,teams:g.teams.map(t=>({...t})),teamOf:{...g.teamOf}};renderNew();$('#ngbg').hidden=false}
+function openNew(){const g=S.game;ng={mode:g.mode||'std',name:g.name,sel:new Set(g.players),lowWins:!!g.lowWins,teamsOn:!!g.teamsOn,teams:g.teams.map(t=>({...t})),teamOf:{...g.teamOf}};renderNew();$('#ngbg').hidden=false}
 function closeNew(){$('#ngbg').hidden=true;ng=null}
 function renderNew(){
   const g=S.game,ros=S.roster.slice().sort(byName);
@@ -500,6 +505,7 @@ function renderNew(){
   ${g.rounds.length?`<span class="hint">“${esc(g.name)}” will be saved to History.</span>`:''}
   <label class="switch" for="ngTeamsOn">Play in teams<input type="checkbox" class="check" id="ngTeamsOn" ${ng.teamsOn?'checked':''}></label>
   <label class="switch" for="ngLowWins">Lowest score wins<input type="checkbox" class="check" id="ngLowWins" ${ng.lowWins?'checked':''}></label>
+  <div id="ngModeBox" style="display:flex;flex-direction:column;gap:8px"></div>
   <span class="label">Game name</span><input class="field" id="ngName" maxlength="40" placeholder="Game night" value="${esc(ng.name)}">
   <div class="section-head" style="margin:0"><span class="label">Who's playing <span id="ngCount" style="text-transform:none;letter-spacing:0;font-weight:600">· ${ng.sel.size} picked</span></span><button class="btn small ghost" data-act="ng-all" id="ngAll">${ng.sel.size?'Untick all':'Tick all'}</button></div>
   ${ros.length?`<ul class="plist">${ros.map(p=>`<li><label class="pick" for="ng-${p.id}"><input type="checkbox" class="check" id="ng-${p.id}" data-ngp="${p.id}" ${ng.sel.has(p.id)?'checked':''}>${tileHTML(p.id,true)}<span class="pname">${esc(p.name)}</span></label></li>`).join('')}</ul>`:'<p class="hint" style="margin:0">No saved players yet. Add some below.</p>'}
@@ -507,8 +513,12 @@ function renderNew(){
   <span class="hint">New players are saved for next time.</span>
   <div id="ngTeamBox" style="display:flex;flex-direction:column;gap:10px"></div>
   <button class="btn primary go" data-act="ng-start">Start game</button>`;
-  renderNgTeams();
+  renderNgTeams();renderNgMode();
 }
+function modeSeg(act,cur){return `<div class="seg" role="group" aria-label="How you score"><button data-act="${act}" data-mode="std" aria-pressed="${cur==='std'}">Add points</button><button data-act="${act}" data-mode="rk" aria-pressed="${cur==='rk'}">Rummikub racks</button></div>`}
+function modeHint(m){return m==='rk'?'Pick who went out; everyone else loses the tiles left in their rack.':'Type each player’s points for the round. Works for Uno, Hearts, or any game.'}
+function renderNgMode(){const box=$('#ngModeBox');if(!box||!ng)return;
+  box.innerHTML=ng.teamsOn?'<span class="label">Scoring</span><span class="hint">Team games add up points each round.</span>':`<span class="label">Scoring</span>${modeSeg('ng-mode',ng.mode)}<span class="hint">${modeHint(ng.mode)}</span>`}
 function renderNgTeams(){
   const box=$('#ngTeamBox');if(!box)return;
   if(!ng.teamsOn){box.innerHTML='';box.hidden=true;return}
@@ -526,7 +536,7 @@ function startNew(){
   const g=S.game,ids=S.roster.slice().sort(byName).filter(p=>ng.sel.has(p.id)).map(p=>p.id);
   const tids=new Set(ng.teams.map(t=>t.id)),teamOf={};for(const k in ng.teamOf)if(tids.has(ng.teamOf[k]))teamOf[k]=ng.teamOf[k];
   const saved=archive(g);
-  S.game=newGame(ids,ng.name.trim(),[],{teamsOn:ng.teamsOn,lowWins:ng.lowWins,teams:ng.teams,teamOf});
+  S.game=newGame(ids,ng.name.trim(),[],{teamsOn:ng.teamsOn,lowWins:ng.lowWins,teams:ng.teams,teamOf,mode:ng.mode});
   S.tab='scores';closeNew();renderAll();window.scrollTo({top:0});
   toast(saved?'Last game saved to History. New game started.':'New game started');
 }
@@ -538,7 +548,7 @@ function openEditor(rid){
   if(!g.players.length){toast('Add players first');S.tab='players';renderAll();return}
   if(g.teamsOn&&!g.teams.length){toast('No teams set up. Start a new game to add teams.');return}
   const r=rid?g.rounds.find(x=>x.id===rid):null;
-  ed={rid:r?r.id:null,type:g.teamsOn?'std':r?r.type:(S.lastType||'std'),vals:{},neg:{},winner:r&&r.winner||null,racks:{}};
+  ed={rid:r?r.id:null,type:g.teamsOn?'std':r?r.type:(g.mode||'std'),vals:{},neg:{},winner:r&&r.winner||null,out:r&&r.out||null,racks:{}};
   ed.base=edBase();
   if(r&&r.type==='std')for(const id in r.scores){ed.vals[id]=Math.abs(r.scores[id])||'';ed.neg[id]=r.scores[id]<0}
   if(r&&r.type==='rk')ed.racks={...r.racks};
@@ -548,12 +558,13 @@ function closeEditor(){$('#sheetbg').hidden=true;ed=null}
 function renderEditor(){
   const g=S.game,num=ed.rid?g.rounds.findIndex(x=>x.id===ed.rid)+1:g.rounds.length+1;
   let h=`<div class="section-head" style="margin:0"><h2>${ed.rid?'Edit':'Score'} round ${num}</h2><button class="btn small ghost" data-act="ed-cancel">Cancel</button></div>
-  ${g.teamsOn?'':`<div class="seg"><button data-act="ed-type" data-type="std" aria-pressed="${ed.type==='std'}">Any game</button><button data-act="ed-type" data-type="rk" aria-pressed="${ed.type==='rk'}">Rummikub</button></div>`}`;
+`;
   if(ed.type==='std'){
     const loose=g.teamsOn?looseOf(g):[];
     if(loose.length)h+=`<p class="warnbox">${esc(loose.map(id=>P(id).name).join(', '))} ${loose.length>1?'aren’t':'isn’t'} on a team, so they’re not scored. Set teams in Players.</p>`;
     const us=unitsOf(g);
-    h+=`<span class="hint">Points this round. Tap + to make it a minus. Blank counts as 0.</span><div class="erows">${us.map((id,i)=>`<div class="erow">${g.teamsOn?'':tileHTML(id,true)}<span class="n">${esc(nameOf(id))}${g.teamsOn?`<span class="sub">${esc(membersOf(g,id).map(m=>P(m).name).join(', ')||'No players yet')}</span>`:''}<span class="pv" id="pv-${id}"></span></span><button class="sign${ed.neg[id]?' minus':''}" data-act="ed-sign" data-id="${id}" aria-pressed="${!!ed.neg[id]}" aria-label="Minus for ${esc(nameOf(id))}">${ed.neg[id]?'−':'+'}</button><input class="field" id="v-${id}" data-val="${id}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${i<us.length-1?'next':'done'}" aria-label="${esc(nameOf(id))} points" placeholder="0" value="${ed.vals[id]??''}"></div>`).join('')}</div>`;
+    h+=`<span class="label">Who went out? <span style="text-transform:none;letter-spacing:0;font-weight:600">· optional</span></span><div class="wins">${g.players.map(id=>`<button data-act="ed-out" data-id="${id}" aria-pressed="${ed.out===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>
+    <span class="hint">Points this round. Tap + to make it a minus. Blank counts as 0.</span><div class="erows">${us.map((id,i)=>`<div class="erow">${g.teamsOn?'':tileHTML(id,true)}<span class="n">${esc(nameOf(id))}${g.teamsOn?`<span class="sub">${esc(membersOf(g,id).map(m=>P(m).name).join(', ')||'No players yet')}</span>`:''}<span class="pv" id="pv-${id}"></span></span><button class="sign${ed.neg[id]?' minus':''}" data-act="ed-sign" data-id="${id}" aria-pressed="${!!ed.neg[id]}" aria-label="Minus for ${esc(nameOf(id))}">${ed.neg[id]?'−':'+'}</button><input class="field" id="v-${id}" data-val="${id}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${i<us.length-1?'next':'done'}" aria-label="${esc(nameOf(id))} points" placeholder="0" value="${ed.vals[id]??''}"></div>`).join('')}</div>`;
   }else{
     h+=`<span class="label">Who went out?</span><div class="wins">${g.players.map(id=>`<button data-act="ed-win" data-id="${id}" aria-pressed="${ed.winner===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>`;
     if(ed.winner){
@@ -573,7 +584,7 @@ function edFocusFirst(){const f=$('#sheet input[data-val],#sheet input[data-rack
 function updRk(){const el=$('#rkwin');if(!el||!ed)return;const s=S.game.players.filter(id=>id!==ed.winner).reduce((a,id)=>a+(parseInt(ed.racks[id])||0),0);el.textContent='+'+s}
 function saveRound(){
   const g=S.game;let r={id:ed.rid||uid(),type:ed.type,scores:{}};
-  if(ed.type==='std'){unitsOf(g).forEach(id=>{const v=parseInt(ed.vals[id])||0;r.scores[id]=ed.neg[id]?-v:v});
+  if(ed.type==='std'){unitsOf(g).forEach(id=>{const v=parseInt(ed.vals[id])||0;r.scores[id]=ed.neg[id]?-v:v});if(ed.out&&g.players.includes(ed.out))r.out=ed.out;
     if(!ed.rid&&Object.values(r.scores).every(v=>v===0)){toast('Every score is 0. Enter at least one score.');edFocusFirst();return}}
   else{
     if(!ed.winner){toast('Pick who went out');return}
@@ -746,7 +757,9 @@ document.addEventListener('click',e=>{
     case 'ng-add-team':ng.teams.push({id:uid(),name:'Team '+String.fromCharCode(65+ng.teams.length%26)});renderNgTeams();break;
     case 'ng-del-team':ng.teams=ng.teams.filter(t=>t.id!==id);for(const k in ng.teamOf)if(ng.teamOf[k]===id)delete ng.teamOf[k];renderNgTeams();break;
     case 'ed-cancel':closeEditor();break;
-    case 'ed-type':ed.type=b.dataset.type;renderEditor();break;
+    case 'ed-out':ed.out=ed.out===id?null:id;document.querySelectorAll('[data-act=ed-out]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.id===ed.out));{const f=$('#sheet input[data-val]');if(f&&!f.value)f.focus({preventScroll:true})}break;
+    case 'ng-mode':ng.mode=b.dataset.mode;renderNgMode();break;
+    case 'g-mode':g.mode=b.dataset.mode;renderAll();toast(g.mode==='rk'?'New rounds use Rummikub racks':'New rounds add up points');break;
     case 'ed-sign':ed.neg[id]=!ed.neg[id];b.classList.toggle('minus',ed.neg[id]);b.textContent=ed.neg[id]?'−':'+';b.setAttribute('aria-pressed',ed.neg[id]);updPv();{const inp=document.getElementById('v-'+id);if(inp)inp.focus({preventScroll:true})}break;
     case 'ed-win':ed.winner=id;delete ed.racks[id];renderEditor();edFocusFirst();break;
     case 'ed-joker':{ed.racks[id]=(parseInt(ed.racks[id])||0)+JOKER;const inp=document.getElementById('r-'+id);if(inp)inp.value=ed.racks[id];updRk();updPv();break}
@@ -775,7 +788,7 @@ document.addEventListener('change',e=>{
   else if(t.dataset.play){const id=t.dataset.play;if(t.checked){if(!g.players.includes(id))g.players.push(id)}else{g.players=g.players.filter(x=>x!==id)}renderAll()}
   else if(t.dataset.tm)tmSetFromInputs();
   else if(t.dataset.ngp&&ng){t.checked?ng.sel.add(t.dataset.ngp):ng.sel.delete(t.dataset.ngp);ngSync()}
-  else if(t.id==='ngTeamsOn'&&ng){ng.teamsOn=t.checked;if(t.checked&&!ng.teams.length)ng.teams=[{id:uid(),name:'Team A'},{id:uid(),name:'Team B'}];renderNgTeams()}
+  else if(t.id==='ngTeamsOn'&&ng){ng.teamsOn=t.checked;if(t.checked&&!ng.teams.length)ng.teams=[{id:uid(),name:'Team A'},{id:uid(),name:'Team B'}];renderNgTeams();renderNgMode()}
   else if(t.dataset.ngtname&&ng){const tm=ng.teams.find(x=>x.id===t.dataset.ngtname);if(tm&&!t.value.trim()){t.value=tm.name=tm.name||'Team'}renderNgTeams()}
   else if(t.dataset.ngteam&&ng){if(t.value)ng.teamOf[t.dataset.ngteam]=t.value;else delete ng.teamOf[t.dataset.ngteam]}
   else if(t.id==='ngLowWins'&&ng)ng.lowWins=t.checked;
