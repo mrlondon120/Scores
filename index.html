@@ -6,42 +6,45 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Game Night">
-<meta name="theme-color" content="#e9efed" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1614" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0e6b5c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2fae94" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Game Night</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Layout: one-column game-table app — tabs (Scores / Rounds / Players), fixed bottom "Score a round" bar, bottom-sheet round editor. Player chips are Rummikub tiles in the four tile colors. */
+/* Score sheet: the family score pad, printed in teal and filled in pencil. One column, underline tabs, ruled rows, fixed bottom "Score a round" bar, bottom-sheet round editor. */
+@font-face{font-family:"Archivo";src:url(fonts/archivo.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"Figtree";src:url(fonts/figtree.woff2) format("woff2");font-weight:300 900;font-display:swap}
+@font-face{font-family:"Oswald";src:url(fonts/oswald-600.woff2) format("woff2");font-weight:600;font-display:swap}
 :root{
-  --bg:#e9efed; --surface:#ffffff; --sunk:#f3f6f5; --ink:#15201d; --muted:#596864; --line:#d2dcd9; --field-line:#74867f;
-  --accent:#0d6a5a; --accent-ink:#ffffff; --accent-soft:#d7ebe6;
-  --tile:#fbf8f0; --tile-edge:#ddd6c5;
+  --bg:#f7f8f7; --surface:#ffffff; --sunk:#f0f4f2; --ink:#1d2523; --graphite:#384140; --muted:#56645f; --line:#d3e4de; --field-line:#74867f;
+  --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#dff0eb; --band-line:rgba(255,255,255,.45);
+  --tile:#ffffff; --tile-edge:#d3e4de;
   --t0:#c62f2f; --t1:#1f5fbf; --t2:#a35c00; --t3:#1d1d1d;
-  --good:#1b7a43; --bad:#b3261e; --warn-bg:#fdf3dc; --warn-ink:#6b4a00;
-  --display:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --good:#1b7a43; --bad:#c23a2b; --warn-bg:#fdf3dc; --warn-ink:#6b4a00;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --form:"Oswald","Archivo",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f; --field-line:#61756c;
-  --accent:#3db49a; --accent-ink:#06201a; --accent-soft:#163a32;
-  --tile:#222d29; --tile-edge:#34433d;
+  --bg:#0d1513; --surface:#141d1b; --sunk:#101917; --ink:#e6edea; --graphite:#d3dcd8; --muted:#93a39e; --line:#21392f; --field-line:#61756c;
+  --accent:#2fae94; --accent-ink:#03201a; --accent-soft:#123029; --band-line:rgba(3,32,26,.45);
+  --tile:#141d1b; --tile-edge:#21392f;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
-  --good:#5cc98a; --bad:#f2817a; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
+  --good:#5cc98a; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#0e1614; --surface:#17211e; --sunk:#121b18; --ink:#e6eeeb; --muted:#93a39e; --line:#29362f; --field-line:#61756c;
-  --accent:#3db49a; --accent-ink:#06201a; --accent-soft:#163a32;
-  --tile:#222d29; --tile-edge:#34433d;
+  --bg:#0d1513; --surface:#141d1b; --sunk:#101917; --ink:#e6edea; --graphite:#d3dcd8; --muted:#93a39e; --line:#21392f; --field-line:#61756c;
+  --accent:#2fae94; --accent-ink:#03201a; --accent-soft:#123029; --band-line:rgba(3,32,26,.45);
+  --tile:#141d1b; --tile-edge:#21392f;
   --t0:#f06b60; --t1:#72a3f3; --t2:#f2a744; --t3:#ebe6da;
-  --good:#5cc98a; --bad:#f2817a; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
+  --good:#5cc98a; --bad:#f08a7e; --warn-bg:#3a2f12; --warn-ink:#f3d58c;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -237,7 +240,68 @@ label.pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:po
 .mini .sub{display:block;font-size:.82rem;font-weight:600;color:var(--muted)}
 .erow .sub{display:block;font-size:.82rem;font-weight:600;color:var(--muted)}
 .warnbox{background:var(--warn-bg);color:var(--warn-ink);border-radius:12px;padding:10px 12px;font-size:.9rem;margin:0}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Score sheet world ---------- */
+h2,.row .total,.wname,#tmNum,.tmmsg,.bar .btn,.btn.go,#gname,.mini .v,.mini .an,tfoot td,tr.sum td,.erow input,.tmset input{font-stretch:84%}
+body::before{background:var(--accent)}
+header{background:var(--accent);color:var(--accent-ink);margin-top:-16px;margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+#gname{color:inherit;font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
+#gname:hover,#gname:focus{border-bottom-color:var(--band-line)}
+header .btn{background:transparent;color:inherit;border-color:var(--band-line)}
+.banner{background:transparent;color:var(--accent);border:1.5px dashed var(--accent);font-weight:700}
+.banner .btn{border-color:var(--accent);color:var(--accent)}
+nav.tabs{display:flex;justify-content:space-between;gap:6px;padding-block:6px 0;margin-top:10px;border-bottom:2px solid var(--line)}
+nav.tabs button{background:transparent;border-radius:0;padding:10px 2px 9px;margin-bottom:-2px;border-bottom:3px solid transparent;font-size:.9rem;min-width:0}
+nav.tabs button[aria-selected="true"]{background:transparent;color:var(--ink);border-bottom-color:var(--accent)}
+section[role=tabpanel]{padding-top:14px}
+.label,.colhead span,th,.kind,.chip,.badge{font-family:var(--form);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.label{color:var(--accent);font-size:.76rem}
+.colhead{display:flex;align-items:flex-end;gap:12px;padding:0 4px 6px;border-bottom:2px solid var(--accent)}
+.colhead span{color:var(--accent);font-size:.74rem}
+.colhead .c1{width:1.6rem;text-align:center}.colhead .c2{flex:1}
+.colhead .chip{margin-left:8px;border-color:var(--accent);color:var(--accent)}
+ol.board{gap:0}
+.row{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:14px 4px}
+.row.lead{border-color:var(--line);box-shadow:none}
+.row .rank{font-family:var(--form);font-weight:600;font-size:1.02rem}
+.row .name{font-weight:800;font-size:1.1rem}
+.row .gap{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-top:1px}
+.row .total{position:relative;font-weight:700;font-size:2rem;color:var(--graphite);letter-spacing:-.01em;padding:0 8px;margin-right:6px}
+.row .total.neg,.neg{color:var(--bad)}
+.ring{position:absolute;left:-14px;top:-9px;width:calc(100% + 28px);height:calc(100% + 18px);overflow:visible;pointer-events:none}
+.ring path{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.ring.draw path{stroke-dasharray:100;stroke-dashoffset:100;animation:pencil .7s cubic-bezier(.5,0,.3,1) .1s forwards}
+@keyframes pencil{to{stroke-dashoffset:0}}
+.team .members{padding-left:2.4rem}
+.tile,.tile.sm{background:transparent;border:1.5px solid var(--pc);box-shadow:none;color:var(--pc);border-radius:7px;width:2.1rem;height:2.1rem;font-size:1rem}
+.tile.sm{width:1.7rem;height:1.7rem;font-size:.84rem;border-radius:6px}
+.tile.two{font-size:.86rem}.tile.sm.two{font-size:.7rem}
+.empty{background:transparent;border:1.5px dashed var(--line);border-radius:10px}
+.card{border-radius:10px;border-color:var(--line)}
+h2{font-weight:700;font-size:1.2rem}
+.btn{border-radius:10px}
+.btn.small{border-radius:10px}
+input.field,select.field{background:var(--surface);border-radius:8px}
+input.field:focus,select.field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.tablewrap{border-radius:10px;border-color:var(--line)}
+th{color:var(--accent);font-size:.74rem;border-bottom:2px solid var(--accent)}
+td{color:var(--graphite)}
+tr.sum td{background:var(--sunk);color:var(--ink)}
+.kind{color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:4px;font-size:.7rem;padding:0 5px}
+.seg{border-radius:10px}
+.seg.three{grid-template-columns:repeat(3,1fr)}
+.sign{border-radius:8px;background:var(--surface);border-color:var(--field-line)}
+.wins button{background:var(--surface);border-radius:10px}
+.hgame{border-radius:10px}
+.hhead .hname{font-weight:700}
+.presets button{background:var(--surface);min-height:44px}
+.winner .tile{width:3.4rem;height:3.4rem;font-size:1.7rem;border-radius:10px;box-shadow:none;border-width:2px}
+.wname{position:relative;display:inline-block;padding:8px 24px;margin:2px 0;font-weight:700}
+.wname .ring{left:-6px;top:-6px;width:calc(100% + 12px);height:calc(100% + 12px)}
+.bar .btn{font-weight:700;border-radius:12px}
+.toast button{color:var(--accent-soft)}
+:root[data-theme="dark"] .toast button{color:var(--accent-ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.ring.draw path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -388,7 +452,11 @@ const rankList=vals=>{let r=0,prev=null;return vals.map((v,i)=>{if(v!==prev){r=i
 const fmtDate=ts=>{const d=new Date(ts),o={weekday:'short',month:'short',day:'numeric'};if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';return d.toLocaleDateString(undefined,o)};
 const openHist=new Set();
 
-function renderAll(){normalize();save();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
+const THEME_META=[...document.querySelectorAll('meta[name=theme-color]')].map(m=>[m,m.getAttribute('content')]);
+function applyTheme(){const th=S.theme||'auto',root=document.documentElement;
+  if(th==='auto')delete root.dataset.theme;else root.dataset.theme=th;
+  THEME_META.forEach(([m,c])=>m.setAttribute('content',th==='auto'?c:(th==='dark'?'#2fae94':'#0e6b5c')))}
+function renderAll(){normalize();save();applyTheme();renderHead();renderScores();renderRounds();renderPlayers();renderHistory();renderTimer()}
 function renderHead(){
   if(document.activeElement!==$('#gname'))$('#gname').value=S.game.name;
   $('#exbanner').hidden=!S.example;
@@ -429,7 +497,7 @@ function miniList(items,withTiles){
 function showWinner(h){
   const st=histStandings(h),w=st.winnerItems[0],tie=st.winners.length>1;
   let html=`<div class="winner"><div class="wtiles">${st.teams||!w?'':st.winnerItems.map((x,i)=>`<span class="wt" style="--i:${i}">${tileFor(x.name,x.c)}</span>`).join('')}</div><span class="label">${tie?'It’s a tie':'Winner'}</span>
-    <div class="wname">${esc(st.winners.join(' & '))}</div>
+    <div class="wname">${esc(st.winners.join(' & '))}${ringSVG(true)}</div>
     <div class="wscore">${fmt(st.top)} points${h.lowWins?' · lowest score wins':''}</div></div>`;
   const rl=`${h.rounds.length} round${h.rounds.length>1?'s':''}`;
   if(st.teamScored)html+=`<span class="label">Final scores · ${rl}</span>${miniList(st.teams,false)}`;
@@ -482,22 +550,28 @@ function renderHistory(){
   $('#v-history').innerHTML=h+'</div>';
 }
 
+const RING_D='M60 6 C 30 2, 6 12, 6 30 C 6 50, 40 57, 66 54 C 92 51, 97 34, 92 20 C 88 9, 70 3, 48 7';
+const ringSVG=draw=>`<svg class="ring${draw?' draw':''}" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="${RING_D}"/></svg>`;
+let lastLeadKey=null;
+function gapText(n,lead,ties,top,v){if(!n)return '';if(lead)return ties>1?'Tied for the lead':'Leading';return `${Math.abs(top-v).toLocaleString()} behind`}
 function renderScores(){
   const g=S.game,t=totals(),n=g.rounds.length;
   if(!g.players.length){$('#v-scores').innerHTML=`<div class="empty"><p>No one is playing yet.</p><button class="btn primary" data-act="tab" data-tab="players">Add players</button></div>`;return}
-  let html=`<p class="meta">${n?`${n} round${n>1?'s':''} played`:'No rounds yet. Tap “Score a round” after each hand.'}${g.lowWins?'<span class="chip">Lowest score wins</span>':''}</p><ol class="board">`;
+  let html=(n?'':'<p class="meta">No rounds yet. Tap “Score a round” after each hand.</p>')+`<div class="colhead"><span class="c1">#</span><span class="c2">${g.teamsOn?'Team':'Player'}${n?` · ${n} round${n>1?'s':''}`:''}${g.lowWins?'<span class="chip">Lowest wins</span>':''}</span><span>Total</span></div><ol class="board">`;
   if(g.teamsOn){
     const ranked=g.teams.slice().sort((a,b)=>cmp(t[a.id],t[b.id])),top=ranked.length?t[ranked[0].id]:null,loose=looseOf(g);
     let rank=0,prev=null;
+    const ties=ranked.filter(tm=>t[tm.id]===top).length,key=n?ranked.filter(tm=>t[tm.id]===top).map(tm=>tm.id).join():'',draw=key!==lastLeadKey;lastLeadKey=key;
     ranked.forEach((tm,i)=>{if(t[tm.id]!==prev){rank=i+1;prev=t[tm.id]}const lead=n&&t[tm.id]===top,mem=membersOf(g,tm.id);
-      html+=`<li class="row team${lead?' lead':''}"><div class="top"><span class="rank">${rank}</span><span class="name">${esc(tm.name)}${lead?'<span class="badge">Leading</span>':''}</span><span class="total${numCls(t[tm.id])}">${fmt(t[tm.id])}</span></div>
+      html+=`<li class="row team${lead?' lead':''}"><div class="top"><span class="rank">${rank}</span><span class="name">${esc(tm.name)}<span class="gap">${gapText(n,lead,ties,top,t[tm.id])}</span></span><span class="total${numCls(t[tm.id])}">${fmt(t[tm.id])}${lead?ringSVG(draw):''}</span></div>
       ${mem.length?`<div class="members">${mem.map(id=>`<span class="member">${tileHTML(id,true)}${esc(P(id).name)}</span>`).join('')}</div>`:''}</li>`});
     if(loose.length)html+=`<li class="row team"><div class="top"><span class="rank">–</span><span class="name">Not on a team</span></div><div class="members">${loose.map(id=>`<span class="member">${tileHTML(id,true)}${esc(P(id).name)}</span>`).join('')}</div><p class="hint" style="margin:0;padding-left:2.4rem">Only teams are scored. Put them on a team in Players.</p></li>`;
   }else{
     const ids=g.players.slice().sort((a,b)=>cmp(t[a],t[b]));const top=t[ids[0]];
+    const ties=ids.filter(id=>t[id]===top).length,key=n?ids.filter(id=>t[id]===top).join():'',draw=key!==lastLeadKey;lastLeadKey=key;
     let rank=0,prev=null;
     ids.forEach((id,i)=>{if(t[id]!==prev){rank=i+1;prev=t[id]}const lead=n&&t[id]===top;
-      html+=`<li class="row${lead?' lead':''}"><span class="rank">${rank}</span>${tileHTML(id)}<span class="name">${esc(P(id).name)}${lead?'<span class="badge">Leading</span>':''}</span><span class="total${numCls(t[id])}">${fmt(t[id])}</span></li>`});
+      html+=`<li class="row${lead?' lead':''}"><span class="rank">${rank}</span>${tileHTML(id)}<span class="name">${esc(P(id).name)}<span class="gap">${gapText(n,lead,ties,top,t[id])}</span></span><span class="total${numCls(t[id])}">${fmt(t[id])}${lead?ringSVG(draw):''}</span></li>`});
   }
   $('#v-scores').innerHTML=html+'</ol>'+(n?'<div class="endrow"><button class="btn" data-act="end-game">End game and show the winner</button></div>':'');
 }
@@ -523,6 +597,8 @@ function renderPlayers(){
   if(g.teamsOn){
     h+=`<div class="card"><h2>Teams this game</h2>${g.players.length?`<ul class="plist">${g.players.map(id=>`<li>${tileHTML(id,true)}<span class="pname">${esc(P(id).name)}</span><select class="field" id="team-${id}" data-team="${id}"><option value="">No team</option>${g.teams.map(tm=>`<option value="${tm.id}" ${g.teamOf[id]===tm.id?'selected':''}>${esc(tm.name)}</option>`).join('')}</select></li>`).join('')}</ul>`:'<p class="hint" style="margin:0">No one is playing yet.</p>'}<span class="hint">To change the teams themselves or turn teams off, start a new game.</span></div>`;
   }
+  const th=S.theme||'auto';
+  h+=`<div class="card"><h2>Display</h2><div class="seg three" role="group" aria-label="Light or dark">${[['auto','Auto'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button data-act="theme" data-theme-v="${v}" aria-pressed="${th===v}">${l}</button>`).join('')}</div><span class="hint">${th==='auto'?'Follows your phone’s light or dark setting.':th==='dark'?'Always dark, whatever the phone is set to.':'Always light, whatever the phone is set to.'}</span></div>`;
   if(!g.teamsOn)h+=`<div class="card"><h2>Scoring</h2>${modeSeg('g-mode',g.mode)}<span class="hint">${modeHint(g.mode)} Changing it only affects new rounds.</span></div>`;
   h+=`<div class="card"><h2>Add a player</h2><form class="addrow" id="addform"><input class="field" id="newname" placeholder="Name" maxlength="24" autocomplete="off" enterkeyhint="done"><button class="btn primary" type="submit">Add</button></form><span class="hint">Names are saved on this device for next game night.</span></div>`;
   h+=`<div class="card"><div class="section-head" style="margin:0"><h2>Saved players</h2><span class="hint">${g.players.length} playing</span></div>`;
@@ -816,6 +892,7 @@ document.addEventListener('click',e=>{
     case 'ed-cancel':closeEditor();break;
     case 'ed-out':ed.out=ed.out===id?null:id;document.querySelectorAll('[data-act=ed-out]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.id===ed.out));{const f=$('#sheet input[data-val]');if(f&&!f.value)f.focus({preventScroll:true})}break;
     case 'ng-mode':ng.mode=b.dataset.mode;renderNgMode();break;
+    case 'theme':S.theme=b.dataset.themeV;renderAll();break;
     case 'g-mode':g.mode=b.dataset.mode;renderAll();toast(g.mode==='rk'?'New rounds use Rummikub racks':'New rounds add up points');break;
     case 'ed-sign':ed.neg[id]=!ed.neg[id];b.classList.toggle('minus',ed.neg[id]);b.textContent=ed.neg[id]?'−':'+';b.setAttribute('aria-pressed',ed.neg[id]);updPv();{const inp=document.getElementById('v-'+id);if(inp)inp.focus({preventScroll:true})}break;
     case 'ed-win':ed.winner=id;delete ed.racks[id];renderEditor();edFocusFirst();break;
