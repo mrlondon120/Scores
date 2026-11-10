@@ -425,7 +425,7 @@ Settings and groups are ruled sections of the pad, not cards.
 - **Empty state:** the one bordered element left: transparent with a 1.5px dashed Rule border, 10px radius, centred Muted text and one primary action.
 
 ### History
-- **List:** opens with a 2px teal rule. Each past game is a ruled row (transparent, 1px Rule bottom border, 14px 4px padding): game name in Archivo 700 at 1.1rem, date in Muted, the winner line with the winner in teal, and a chevron that turns 90° when open. Opening a row reveals standings and its Rounds grid below a 1px dashed Rule.
+- **List:** opens with a 2px teal rule. Each past game is a ruled row (transparent, 1px Rule bottom border, 14px 4px padding): game name in Archivo 700 at 1.1rem, date in Muted, the winner line with the winner in teal, and a chevron (a 20px stroked SVG in Muted, never a text glyph) that turns 90° when open. Opening a row reveals standings and its Rounds grid below a 1px dashed Rule.
 - **All nights:** a collapsible pad section. The heading itself is the toggle button (full width, 44px minimum, chevron at the right, rotates 90° when open, `aria-expanded`). The "Last winner: <name>" line stays visible whether open or closed, with the name ringed in pencil, plus "N in a row" for a streak; a tied last game reads "The last game was a tie." Open/closed is saved with the rest of the data (open by default). The body lists win counts per player with first place in teal and a counted-games hint.
 
 ### Game-over card
@@ -435,7 +435,7 @@ The sheet centred as a card (max-width 440px, 18px radius, 24px top padding). Th
 Bottom sheets in Sheet White, 18px top radius, 18px/16px padding with safe-area insets, 14px gap between blocks, a sticky action row with the sheet action lip. The round sheet's winner line is a Teal Wash strip (12px radius) with the winning total in Archivo, teal. Sheets have no coloured top edge; the rounded top corners and the scrim are their only frame.
 
 ### Toast
-An Ink rectangle (12px radius) with Pad-coloured text, floating above the bottom bar (or at the top when the bottom is busy). Its Undo action is underlined, extra-bold, in Teal Wash.
+An Ink rectangle (12px radius) with Pad-coloured text, floating above the bottom bar (or at the top when the bottom is busy). Its Undo action is underlined and extra-bold in the Pad colour, so it reads the same whether dark mode comes from the phone or the Display setting.
 
 ### Turn timer
 A full-screen dark overlay with two rows of three 58px outlined circular controls (stop, pause, mute; 2.5px white border at 85%), one at the top and a mirrored one at the bottom so either player can reach them. The centre is a tap-to-restart dial: a 5px track at 14% white and a round-capped progress arc in the state ring colour, sized min(80vw, 52vh, 420px), around the Timer numeral. The dial does a quick 0.22s scale-in on each tap. The state colours are in Colors › Turn timer. Time's up pulses the numeral (1s, to 45% opacity). A status line in Archivo 700 at 1.6rem sits below the dial.

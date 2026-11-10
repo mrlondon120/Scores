@@ -170,7 +170,7 @@ input.field,select.field{border:1px solid var(--field-line);background:var(--sun
 .hhead .hdate{font-size:.85rem;color:var(--muted)}
 .hhead .hwin{font-size:.92rem;font-weight:700}
 .hhead .hwin b{color:var(--good)}
-.chev{flex:none;color:var(--muted);font-size:1.2rem;transition:transform .15s}
+.chev{flex:none;width:20px;height:20px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .hgame.open .chev{transform:rotate(90deg)}
 .hbody{border-top:1px solid var(--line);padding:12px 14px 14px;display:flex;flex-direction:column;gap:12px}
 .mini{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -301,8 +301,7 @@ tr.sum td{background:var(--sunk);color:var(--ink)}
 .wname{position:relative;display:inline-block;padding:8px 24px;margin:2px 0;font-weight:700}
 .wname .ring{left:-6px;top:-6px;width:calc(100% + 12px);height:calc(100% + 12px)}
 .bar .btn{font-weight:700;border-radius:12px}
-.toast button{color:var(--accent-soft)}
-:root[data-theme="dark"] .toast button{color:var(--accent-ink)}
+.toast button{color:var(--bg)}
 /* Pad sections instead of cards (Players, Timer, History) */
 .card{background:transparent;border:0;border-radius:0;padding:0 0 20px;margin-bottom:18px;border-bottom:1px solid var(--line)}
 .card>h2:first-child,.card>.section-head:first-child{padding-bottom:7px;border-bottom:2px solid var(--accent);margin-bottom:2px}
@@ -327,7 +326,7 @@ tr.sum td:first-child{font-family:var(--display);color:var(--ink)}
 .label .lsub{font-family:var(--body);text-transform:none;letter-spacing:0;font-weight:600;color:var(--muted)}
 .antoggle{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;cursor:pointer;font:inherit}
 .antoggle:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.allnights .chev{font-size:1.4rem}
+.allnights .chev{width:22px;height:22px}
 .allnights.open .chev{transform:rotate(90deg)}
 #anbody{display:flex;flex-direction:column;gap:10px}
 #anbody[hidden]{display:none}
@@ -555,7 +554,7 @@ function allNightsHTML(H){
   const lastName=a.streak&&a.streak.id?(S.roster.find(p=>p.id===a.streak.id)||H.filter(g=>!g.teamsOn)[0].players.find(p=>p.id===a.streak.id)||{name:'?'}).name:null;
   const line=lastName?`Last winner: <b class="ringed">${esc(lastName)}${ringSVG(false)}</b>${a.streak.n>1?` · ${a.streak.n} in a row`:''}`:'The last game was a tie.';
   const open=!S.anClosed;
-  return `<div class="card allnights${open?' open':''}"><h2><button class="antoggle" data-act="an-toggle" aria-expanded="${open}" aria-controls="anbody">All nights<span class="chev" aria-hidden="true">›</span></button></h2><p class="anline">${line}</p>
+  return `<div class="card allnights${open?' open':''}"><h2><button class="antoggle" data-act="an-toggle" aria-expanded="${open}" aria-controls="anbody">All nights<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></h2><p class="anline">${line}</p>
   <div id="anbody"${open?'':' hidden'}><ul class="mini">${a.rows.map(r=>`<li class="${top&&r.wins===top?'first':''}">${tileFor(r.name,r.c,true)}<span class="n">${esc(r.name)}</span><span class="an">${r.wins} win${r.wins===1?'':'s'} <span>of ${r.played}</span></span></li>`).join('')}</ul>
   <span class="hint">${a.games} game${a.games>1?'s':''} counted${a.ties?`, ${a.ties} tied (no win)`:''}${a.teamN?`. ${a.teamN} team game${a.teamN>1?'s':''} not counted`:''}.</span></div></div>`;
 }
@@ -569,7 +568,7 @@ function renderHistory(){
       <span class="hinfo"><span class="hdate">${fmtDate(g.ended)} · ${g.rounds.length} round${g.rounds.length>1?'s':''} · ${g.players.length} players</span>
       <span class="hname">${esc(g.name)}</span>
       <span class="hwin">${st.winners.length>1?'Tie':'Winner'}: <b>${esc(st.winners.join(' & '))}</b> (${fmt(st.top)})</span></span>
-      <span class="chev" aria-hidden="true">›</span></button>`;
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`;
     if(open){
       h+=`<div class="hbody">`;
       const fl=`<span class="label">Final scores${g.lowWins?' · lowest score wins':''}</span>`;
