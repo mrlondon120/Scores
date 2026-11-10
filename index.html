@@ -137,6 +137,11 @@ input.field,select.field{border:1px solid var(--line);background:var(--sunk);bor
 .erows{display:flex;flex-direction:column;gap:8px}
 .erow{display:flex;align-items:center;gap:10px}
 .erow .n{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.erow .pv{display:block;font-size:.85rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.erow .pv b{color:var(--ink)}
+.erow .pv b.neg{color:var(--bad)}
+#sheet>.actions:last-child{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));margin-top:-6px;padding-top:10px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));margin-bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--surface);box-shadow:0 -10px 12px -10px rgba(0,0,0,.18)}
+#sheet>.actions:last-child .btn{min-height:52px}
 .erow input{width:5.5rem;text-align:right;font-family:var(--display);font-weight:600;font-size:1.15rem}
 .sign{width:2.8rem;height:2.8rem;border-radius:10px;border:1px solid var(--line);background:var(--sunk);font-family:var(--display);font-weight:700;font-size:1.3rem}
 .sign.minus{background:var(--bad);color:#fff;border-color:var(--bad)}
@@ -534,9 +539,10 @@ function openEditor(rid){
   if(g.teamsOn&&!g.teams.length){toast('No teams set up. Start a new game to add teams.');return}
   const r=rid?g.rounds.find(x=>x.id===rid):null;
   ed={rid:r?r.id:null,type:g.teamsOn?'std':r?r.type:(S.lastType||'std'),vals:{},neg:{},winner:r&&r.winner||null,racks:{}};
+  ed.base=edBase();
   if(r&&r.type==='std')for(const id in r.scores){ed.vals[id]=Math.abs(r.scores[id])||'';ed.neg[id]=r.scores[id]<0}
   if(r&&r.type==='rk')ed.racks={...r.racks};
-  renderEditor();$('#sheetbg').hidden=false;
+  renderEditor();$('#sheetbg').hidden=false;if(!rid)edFocusFirst();
 }
 function closeEditor(){$('#sheetbg').hidden=true;ed=null}
 function renderEditor(){
@@ -546,21 +552,29 @@ function renderEditor(){
   if(ed.type==='std'){
     const loose=g.teamsOn?looseOf(g):[];
     if(loose.length)h+=`<p class="warnbox">${esc(loose.map(id=>P(id).name).join(', '))} ${loose.length>1?'aren’t':'isn’t'} on a team, so they’re not scored. Set teams in Players.</p>`;
-    h+=`<span class="hint">Enter each ${g.teamsOn?'team':'player'}'s points for this round. Tap ± to make it a minus. Leave blank for 0.</span><div class="erows">${unitsOf(g).map(id=>`<div class="erow">${g.teamsOn?'':tileHTML(id,true)}<span class="n">${esc(nameOf(id))}${g.teamsOn?`<span class="sub">${esc(membersOf(g,id).map(m=>P(m).name).join(', ')||'No players yet')}</span>`:''}</span><button class="sign${ed.neg[id]?' minus':''}" data-act="ed-sign" data-id="${id}" aria-label="Toggle minus">${ed.neg[id]?'−':'+'}</button><input class="field" id="v-${id}" data-val="${id}" inputmode="numeric" pattern="[0-9]*" placeholder="0" value="${ed.vals[id]??''}"></div>`).join('')}</div>`;
+    const us=unitsOf(g);
+    h+=`<span class="hint">Points this round. Tap + to make it a minus. Blank counts as 0.</span><div class="erows">${us.map((id,i)=>`<div class="erow">${g.teamsOn?'':tileHTML(id,true)}<span class="n">${esc(nameOf(id))}${g.teamsOn?`<span class="sub">${esc(membersOf(g,id).map(m=>P(m).name).join(', ')||'No players yet')}</span>`:''}<span class="pv" id="pv-${id}"></span></span><button class="sign${ed.neg[id]?' minus':''}" data-act="ed-sign" data-id="${id}" aria-pressed="${!!ed.neg[id]}" aria-label="Minus for ${esc(nameOf(id))}">${ed.neg[id]?'−':'+'}</button><input class="field" id="v-${id}" data-val="${id}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${i<us.length-1?'next':'done'}" aria-label="${esc(nameOf(id))} points" placeholder="0" value="${ed.vals[id]??''}"></div>`).join('')}</div>`;
   }else{
     h+=`<span class="label">Who went out?</span><div class="wins">${g.players.map(id=>`<button data-act="ed-win" data-id="${id}" aria-pressed="${ed.winner===id}">${tileHTML(id,true)}${esc(P(id).name)}</button>`).join('')}</div>`;
     if(ed.winner){
-      h+=`<span class="label">Tiles left in each rack</span><span class="hint">Add up the numbers on the tiles each player still has. A joker counts ${JOKER}.</span><div class="erows">${g.players.filter(id=>id!==ed.winner).map(id=>`<div class="erow">${tileHTML(id,true)}<span class="n">${esc(P(id).name)}</span><button class="btn small" data-act="ed-joker" data-id="${id}">+ Joker</button><input class="field" id="r-${id}" data-rack="${id}" inputmode="numeric" pattern="[0-9]*" placeholder="0" value="${ed.racks[id]??''}"></div>`).join('')}</div>
-      <div class="winline"><span>${esc(P(ed.winner).name)} gets</span><b id="rkwin">+0</b></div>`;
+      h+=`<span class="label">Tiles left in each rack</span><span class="hint">Add up the numbers on the tiles each player still has. A joker counts ${JOKER}.</span>${(()=>{const others=g.players.filter(id=>id!==ed.winner);return `<div class="erows">${others.map((id,i)=>`<div class="erow">${tileHTML(id,true)}<span class="n">${esc(P(id).name)}<span class="pv" id="pv-${id}"></span></span><button class="btn small" data-act="ed-joker" data-id="${id}" aria-label="Add a joker for ${esc(P(id).name)}">+ Joker</button><input class="field" id="r-${id}" data-rack="${id}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${i<others.length-1?'next':'done'}" aria-label="${esc(P(id).name)} tiles left" placeholder="0" value="${ed.racks[id]??''}"></div>`).join('')}</div>`})()}
+      <div class="winline"><span>${esc(P(ed.winner).name)} gets<span class="pv" id="pv-${ed.winner}" style="display:block"></span></span><b id="rkwin">+0</b></div>`;
     }else h+=`<span class="hint">Pick the player who played all their tiles. Everyone else loses what's left in their rack, and the winner gets that total.</span>`;
   }
   h+=`<div class="actions">${ed.rid?'<button class="btn danger" data-act="ed-del">Delete round</button>':''}<button class="btn primary grow" data-act="ed-save">Save round</button></div>`;
-  $('#sheet').innerHTML=h;updRk();
+  $('#sheet').innerHTML=h;updRk();updPv();
 }
+function edBase(){const g=S.game;const o={...g,rounds:g.rounds.filter(r=>r.id!==ed.rid)};return totalsOf(o)}
+function pvHTML(id,delta){const b=ed.base[id]||0;if(!delta)return `Total ${fmt(b)}`;const n=b+delta;return `${fmt(b)} → <b class="${n<0?'neg':''}">${fmt(n)}</b>`}
+function updPv(){if(!ed)return;const g=S.game;
+  if(ed.type==='std')unitsOf(g).forEach(id=>{const el=document.getElementById('pv-'+id);if(el){const v=parseInt(ed.vals[id])||0;el.innerHTML=pvHTML(id,ed.neg[id]?-v:v)}});
+  else if(ed.winner){let s=0;g.players.forEach(id=>{if(id===ed.winner)return;const v=parseInt(ed.racks[id])||0;s+=v;const el=document.getElementById('pv-'+id);if(el)el.innerHTML=pvHTML(id,-v)});const w=document.getElementById('pv-'+ed.winner);if(w)w.innerHTML=pvHTML(ed.winner,s)}}
+function edFocusFirst(){const f=$('#sheet input[data-val],#sheet input[data-rack]');if(f)f.focus({preventScroll:true})}
 function updRk(){const el=$('#rkwin');if(!el||!ed)return;const s=S.game.players.filter(id=>id!==ed.winner).reduce((a,id)=>a+(parseInt(ed.racks[id])||0),0);el.textContent='+'+s}
 function saveRound(){
   const g=S.game;let r={id:ed.rid||uid(),type:ed.type,scores:{}};
-  if(ed.type==='std'){unitsOf(g).forEach(id=>{const v=parseInt(ed.vals[id])||0;r.scores[id]=ed.neg[id]?-v:v})}
+  if(ed.type==='std'){unitsOf(g).forEach(id=>{const v=parseInt(ed.vals[id])||0;r.scores[id]=ed.neg[id]?-v:v});
+    if(!ed.rid&&Object.values(r.scores).every(v=>v===0)){toast('Every score is 0. Enter at least one score.');edFocusFirst();return}}
   else{
     if(!ed.winner){toast('Pick who went out');return}
     r.winner=ed.winner;r.racks={};let sum=0;
@@ -733,9 +747,9 @@ document.addEventListener('click',e=>{
     case 'ng-del-team':ng.teams=ng.teams.filter(t=>t.id!==id);for(const k in ng.teamOf)if(ng.teamOf[k]===id)delete ng.teamOf[k];renderNgTeams();break;
     case 'ed-cancel':closeEditor();break;
     case 'ed-type':ed.type=b.dataset.type;renderEditor();break;
-    case 'ed-sign':ed.neg[id]=!ed.neg[id];b.classList.toggle('minus',ed.neg[id]);b.textContent=ed.neg[id]?'−':'+';break;
-    case 'ed-win':ed.winner=id;delete ed.racks[id];renderEditor();break;
-    case 'ed-joker':{ed.racks[id]=(parseInt(ed.racks[id])||0)+JOKER;const inp=document.getElementById('r-'+id);if(inp)inp.value=ed.racks[id];updRk();break}
+    case 'ed-sign':ed.neg[id]=!ed.neg[id];b.classList.toggle('minus',ed.neg[id]);b.textContent=ed.neg[id]?'−':'+';b.setAttribute('aria-pressed',ed.neg[id]);updPv();{const inp=document.getElementById('v-'+id);if(inp)inp.focus({preventScroll:true})}break;
+    case 'ed-win':ed.winner=id;delete ed.racks[id];renderEditor();edFocusFirst();break;
+    case 'ed-joker':{ed.racks[id]=(parseInt(ed.racks[id])||0)+JOKER;const inp=document.getElementById('r-'+id);if(inp)inp.value=ed.racks[id];updRk();updPv();break}
     case 'ed-save':saveRound();break;
     case 'tm-start':tmOpen();break;
     case 'tm-close':tmClose();break;
@@ -747,8 +761,8 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{
   const t=e.target;
-  if(t.dataset.val&&ed){t.value=t.value.replace(/[^0-9]/g,'');ed.vals[t.dataset.val]=t.value}
-  if(t.dataset.rack&&ed){t.value=t.value.replace(/[^0-9]/g,'');ed.racks[t.dataset.rack]=t.value;updRk()}
+  if(t.dataset.val&&ed){t.value=t.value.replace(/[^0-9]/g,'');ed.vals[t.dataset.val]=t.value;updPv()}
+  if(t.dataset.rack&&ed){t.value=t.value.replace(/[^0-9]/g,'');ed.racks[t.dataset.rack]=t.value;updRk();updPv()}
   if(t.id==='gname'){S.game.name=t.value;save()}
   if(t.id==='ngName'&&ng)ng.name=t.value;
   if(t.dataset.ngtname&&ng){const tm=ng.teams.find(x=>x.id===t.dataset.ngtname);if(tm&&t.value.trim())tm.name=t.value.trim()}
@@ -776,6 +790,11 @@ document.addEventListener('submit',e=>{
   const inp=$('#newname'),v=inp.value.trim();if(!v)return;
   const p={id:uid(),name:v,c:S.roster.length%4};S.roster.push(p);S.game.players.push(p.id);
   renderAll();const ni=$('#newname');if(ni)ni.focus();toast(`${v} added`);
+});
+document.addEventListener('keydown',e=>{
+  const t=e.target;if(e.key!=='Enter'||!ed||!(t.dataset&&(t.dataset.val||t.dataset.rack)))return;
+  e.preventDefault();const all=[...document.querySelectorAll('#sheet input[data-val],#sheet input[data-rack]')];const i=all.indexOf(t);
+  if(i>-1&&i<all.length-1){all[i+1].focus();all[i+1].select&&all[i+1].select()}else{t.blur();saveRound()}
 });
 document.addEventListener('keydown',e=>{if(e.key!=='Escape'||TM.open)return;if(ng)closeNew();if(ed)closeEditor();$('#winbg').hidden=true});
 renderAll();
